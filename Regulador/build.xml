@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project Regulador with libraries in sub-folder">
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="C:\Users\Carlos\Documents\UNED\3\Sistemas Distribuidos\Practica\Codigo\regulador.jar">
+            <manifest>
+                <attribute name="Main-Class" value="es.carlop.uned.sidi.regulador.Regulador"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="C:\Users\Carlos\Documents\UNED\3\Sistemas Distribuidos\Practica\Codigo\Regulador\bin"/>
+        </jar>
+    </target>
+</project>
