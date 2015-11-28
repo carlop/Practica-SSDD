@@ -6,12 +6,12 @@
  * Correo electrónico: yo@carlop.es
  *
  */
-package es.carlop.uned.sidi.distribuidor;
+package es.carlop.uned.ssdd.regulador;
 
-public class Distribuidor {
+public class Regulador {
 
     public static void main(String[] args) {
-        System.out.println("Distribuidor");
+        System.out.println("Regulador");
     }
 
 }
