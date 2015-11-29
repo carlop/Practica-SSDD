@@ -20,38 +20,38 @@ public class Oferta {
     
     // Constructor
     public Oferta(TipoMercancia mercancia, float precio, float kilos) {
-            this.setMercancia(mercancia);
-            this.setPrecio(precio);
-            this.setKilos(kilos);
+        this.setMercancia(mercancia);
+        this.setPrecio(precio);
+        this.setKilos(kilos);
     }
 
     // Devuelve el tipo de mercancía de la oferta
     public TipoMercancia getMercancia() {
-            return mercancia;
+        return mercancia;
     }
 
     // Establece el tipo de mercancía de la oferta
     public void setMercancia(TipoMercancia mercancia) {
-            this.mercancia = mercancia;
+        this.mercancia = mercancia;
     }
 
     // Devuelve el precio de la oferta
     public float getPrecio() {
-            return precio;
+        return precio;
     }
 
     // Establece el precio de la oferta
     public void setPrecio(float precio) {
-            this.precio = precio;
+        this.precio = precio;
     }
 
     // Deveuelve los kilos de la oferta
     public float getKilos() {
-            return kilos;
+        return kilos;
     }
 
     // Establece los kilos de la oferta
     public void setKilos(float kilos) {
-            this.kilos = kilos;
+        this.kilos = kilos;
     }
 }
