@@ -4,7 +4,7 @@
     <target name="create_run_jar">
         <jar destfile="C:\Users\Carlos\Documents\UNED\3\Sistemas Distribuidos\Practica\Codigo\cliente.jar">
             <manifest>
-                <attribute name="Main-Class" value="es.carlop.uned.sidi.cliente.Cliente"/>
+                <attribute name="Main-Class" value="es.carlop.uned.ssdd.cliente.Cliente"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="C:\Users\Carlos\Documents\UNED\3\Sistemas Distribuidos\Practica\Codigo\Cliente\bin"/>
