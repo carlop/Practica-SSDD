@@ -7,9 +7,12 @@
  */
 package es.carlop.uned.ssdd.cliente;
 
+import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
+
 public class Cliente {
 
-    public static void main(String[] args) {
-        System.out.println("Cliente");
+    public void main(String[] args) {
+	String[] opcionesMenu = {"Introducir demanda.", "Recibir ofertas.", "Comprar mercancía.", "Darse de baja en el sistema"};
+	InterfazGraficaUsuario.mostrarMenu(opcionesMenu);
     }
 }
