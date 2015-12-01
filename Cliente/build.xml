@@ -4,7 +4,7 @@
     <!--ANT 1.7 is required                                        -->
     <!--define folder properties-->
     <property name="dir.buildfile" value="."/>
-    <property name="dir.workspace" value="${dir.buildfile}"/>
+    <property name="dir.workspace" value="${dir.buildfile}/.."/>
     <property name="dir.jarfile" value="${dir.workspace}"/>
     <target name="create_run_jar">
         <jar destfile="${dir.workspace}/cliente.jar" filesetmanifest="mergewithoutmain">
@@ -12,7 +12,7 @@
                 <attribute name="Main-Class" value="es.carlop.uned.ssdd.cliente.Cliente"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="${dir.workspace}/Cliente/bin"/>
+            <fileset dir="${dir.buildfile}/bin"/>
             <fileset dir="${dir.workspace}/Comun/bin"/>
         </jar>
     </target>
