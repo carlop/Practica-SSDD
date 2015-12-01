@@ -13,9 +13,9 @@ import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
 
 public class Cliente {
     
-    private static int opcion = 0;
 
     public static void main(String[] args) throws IOException {
+	int opcion = 0;
         String[] opcionesMenuInicio = {"Introducir demanda.", "Recibir ofertas.", "Comprar mercancía.", "Darse de baja en el sistema"};
         String[] opcionesMenu = {"Introducir demanda.", "Recibir ofertas.", "Comprar mercancía.", "Darse de baja en el sistema"};
         InterfazGraficaUsuario.limpiarPantalla();
