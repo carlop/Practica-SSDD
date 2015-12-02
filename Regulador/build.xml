@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project Regulador with libraries in sub-folder">
+<project default="create_run_jar" name="Create Runnable Jar for Project Regulador">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value="${dir.buildfile}/.."/>
+    <property name="dir.jarfile" value="${dir.workspace}"/>
     <target name="create_run_jar">
-        <jar destfile="C:\Users\Carlos\Documents\UNED\3\Sistemas Distribuidos\Practica\Codigo\regulador.jar">
+        <jar destfile="${dir.workspace}/regulador.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="es.carlop.uned.ssdd.regulador.Regulador"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="C:\Users\Carlos\Documents\UNED\3\Sistemas Distribuidos\Practica\Codigo\Regulador\bin"/>
+            <fileset dir="${dir.buildfile}/bin"/>
+            <fileset dir="${dir.workspace}/Comun/bin"/>
         </jar>
     </target>
 </project>
