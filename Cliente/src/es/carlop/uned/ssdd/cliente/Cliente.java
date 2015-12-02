@@ -12,10 +12,9 @@ import java.io.IOException;
 import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
 
 public class Cliente {
-    
 
     public static void main(String[] args) throws IOException {
-	int opcion = 0;
+        int opcion = 0;
         String[] opcionesMenuInicio = {"Introducir demanda.", "Recibir ofertas.", "Comprar mercancía.", "Darse de baja en el sistema"};
         String[] opcionesMenu = {"Introducir demanda.", "Recibir ofertas.", "Comprar mercancía.", "Darse de baja en el sistema"};
         InterfazGraficaUsuario.limpiarPantalla();
@@ -23,26 +22,25 @@ public class Cliente {
             opcion = InterfazGraficaUsuario.mostrarMenu(opcionesMenu);
             switch (opcion) {
             case 1:
-        	InterfazGraficaUsuario.limpiarPantalla();
+                InterfazGraficaUsuario.limpiarPantalla();
                 System.out.println(opcion);
                 break;
             case 2:
-        	InterfazGraficaUsuario.limpiarPantalla();
+                InterfazGraficaUsuario.limpiarPantalla();
                 System.out.println(opcion);
                 break;
             case 3:
-        	InterfazGraficaUsuario.limpiarPantalla();
+                InterfazGraficaUsuario.limpiarPantalla();
                 System.out.println(opcion);
                 break;
             case 4:
-        	InterfazGraficaUsuario.limpiarPantalla();
+                InterfazGraficaUsuario.limpiarPantalla();
                 System.out.println(opcion);
                 break;
             default:
-        	InterfazGraficaUsuario.limpiarPantalla();
+                InterfazGraficaUsuario.limpiarPantalla();
                 break;
             }
         } while (opcion != 5);
-
     }
 }
