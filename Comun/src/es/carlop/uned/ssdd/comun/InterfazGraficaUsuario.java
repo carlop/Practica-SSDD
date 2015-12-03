@@ -18,18 +18,32 @@ public class InterfazGraficaUsuario {
     private static Console console = System.console();
     private static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-    public static int mostrarMenu(String[] opciones) {
+    public static int mostrarMenu(String nombre, String[] opciones) {
         int opcion = 0;
+        System.out.println(nombre);
+        System.out.println("----------------------");
         System.out.println("Seleccione una opción:");
         for (int i = 0; i < opciones.length; i++) {
            System.out.println((i+1) + ". " + opciones[i]); 
         }
         System.out.println((opciones.length + 1) + ". Salir");
-        opcion = leerConsola();
+        opcion = leerOpcion();
         return opcion;
     }
     
-    private static int leerConsola() {
+    private static String leerConsola() {
+        if (console != null) {
+            return console.readLine();
+        }
+        try {
+            return reader.readLine();
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private static int leerOpcion() {
         if (console != null) {
             return Integer.parseInt(console.readLine());
         }
@@ -40,7 +54,7 @@ public class InterfazGraficaUsuario {
             throw new RuntimeException(e);
         }
     }
-    
+
     public static void limpiarPantalla() throws IOException {
         try {
             if (System.getProperty("os.name").startsWith("Window")) {
