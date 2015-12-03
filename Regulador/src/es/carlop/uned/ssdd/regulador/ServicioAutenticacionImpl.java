@@ -9,7 +9,6 @@
 package es.carlop.uned.ssdd.regulador;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +17,7 @@ import java.util.Map;
 import es.carlop.uned.ssdd.comun.ServicioAutenticacionInterface;
 import es.carlop.uned.ssdd.comun.TipoUsuario;
 
-public class ServicioAutenticacionImpl extends UnicastRemoteObject implements ServicioAutenticacionInterface {
-
-    private static final long serialVersionUID = 6086832664658177647L;
+public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface {
 
     // Clientes registrados en el sistema
     private Map<String, String> clientes = new HashMap<String, String>();
@@ -34,10 +31,6 @@ public class ServicioAutenticacionImpl extends UnicastRemoteObject implements Se
     // Lista de distribuidores conectados
     private List<Integer> distribuidoresConectados = new ArrayList<Integer>();
     
-    public ServicioAutenticacionImpl() throws RemoteException {
-        super();
-    }
-
     @Override
     public int registrar(String usuario, String password, TipoUsuario tipoUsuario) throws RemoteException {
         if (tipoUsuario == TipoUsuario.CLIENTE) {
@@ -91,5 +84,4 @@ public class ServicioAutenticacionImpl extends UnicastRemoteObject implements Se
         }
         return listaDistribuidores;
     }
-
 }

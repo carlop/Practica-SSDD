@@ -5,7 +5,8 @@ public class Codebase {
     public static final String CODEBASE = "java.rmi.server.codebase";
     
     public static void setCodeBase(Class<?> c) {
-        String ruta = c.getProtectionDomain().getCodeSource().getLocation().toString();
+        String ruta = c.getProtectionDomain().getCodeSource()
+                       .getLocation().toString();
         
         String path = System.getProperty(CODEBASE);
         
