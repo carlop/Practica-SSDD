@@ -50,11 +50,9 @@ public class Cliente {
                             break;
                         case 3:
                             InterfazGraficaUsuario.limpiarPantalla();
-                            System.out.println(opcion);
                             break;
                         case 4:
                             InterfazGraficaUsuario.limpiarPantalla();
-                            System.out.println(opcion);
                             break;
                         case 5:
                             seleccion = -1;
@@ -161,14 +159,16 @@ public class Cliente {
     }
 
     /**
-     * @return the id
+     * Devuelve el identificador del cliente
+     * @return el id
      */
     public static int getId() {
         return id;
     }
 
     /**
-     * @param id the id to set
+     * Establece el identificador del cliente
+     * @param id identificador del cliente
      */
     public static void setId(int id) {
         Cliente.id = id;

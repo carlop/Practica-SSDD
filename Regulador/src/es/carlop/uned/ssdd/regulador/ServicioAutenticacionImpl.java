@@ -48,7 +48,7 @@ public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface
         } else {
             db.put(usuario, password);
             registrado = true;
-            System.out.println(TipoUsuario.CLIENTE + " registrado con nombre " + usuario);
+            System.out.println(tipoUsuario + " registrado con nombre " + usuario);
         }
         return registrado;
     }

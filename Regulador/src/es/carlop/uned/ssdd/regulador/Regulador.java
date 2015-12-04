@@ -32,8 +32,7 @@ public class Regulador {
             Registry registry = LocateRegistry.createRegistry(8888);
 
             ServicioAutenticacionInterface servicioAutenticacion = new ServicioAutenticacionImpl();
-            remoteServicioAutenticacion = (ServicioAutenticacionInterface) UnicastRemoteObject.exportObject(servicioAutenticacion, 8890);
-//            registry.rebind("rmi://localhost/servicioautenticacion:8890", remoteAutenticacion);
+            remoteServicioAutenticacion = (ServicioAutenticacionInterface) UnicastRemoteObject.exportObject(servicioAutenticacion, 8888);
             registry.rebind("servicioautenticacion", remoteServicioAutenticacion);
             System.out.println("Servicio de autenticacion preparado...");
             int opcion = 0;
