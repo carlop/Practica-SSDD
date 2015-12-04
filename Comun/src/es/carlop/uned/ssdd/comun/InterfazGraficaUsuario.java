@@ -20,15 +20,42 @@ public class InterfazGraficaUsuario {
 
     public static int mostrarMenu(String nombre, String[] opciones) {
         int opcion = 0;
-        System.out.println(nombre);
-        System.out.println("----------------------");
+        mostrarTitulo(nombre);
         System.out.println("Seleccione una opción:");
         for (int i = 0; i < opciones.length; i++) {
            System.out.println((i+1) + ". " + opciones[i]); 
         }
         System.out.println((opciones.length + 1) + ". Salir");
+        System.out.println();
         opcion = leerOpcion();
         return opcion;
+    }
+    
+    /**
+     * Pide un dato a través de la interfaz del sistema
+     * @param nombre Nombre del dato que se desea pedir
+     * @return Dato introducido por el usuario
+     */
+    public static String pedirDato(String nombre) {
+        String dato = "";
+
+        System.out.println("Introduzca " + nombre + ": ");
+        dato = leerConsola();
+        
+        return dato;
+    }
+    
+    /**
+     * Muestra un titulo en los menus y otras partes de la interfaz
+     * @param titulo Titulo a usar
+     */
+    public static void mostrarTitulo(String titulo) {
+        System.out.println();
+        System.out.println(titulo);
+        for (int i = 0; i < titulo.length(); i++) {
+            System.out.print("-");
+        }
+        System.out.println();
     }
     
     private static String leerConsola() {
