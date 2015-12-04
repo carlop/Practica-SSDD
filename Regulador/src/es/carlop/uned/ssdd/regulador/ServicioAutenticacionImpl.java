@@ -11,6 +11,7 @@ package es.carlop.uned.ssdd.regulador;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -25,26 +26,67 @@ public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface
     // Distribuidores registrados en el sistema
     private Map<String, String> distribuidores = new HashMap<String, String>();
     
-    // Lista de clientes conectados
-    private List<Integer> clientesConectados = new ArrayList<Integer>();
+    // Usuarios conectados
+    private Map<Integer, String> usuariosConectados = new HashMap<Integer, String>();
     
-    // Lista de distribuidores conectados
-    private List<Integer> distribuidoresConectados = new ArrayList<Integer>();
+    // Último identificador asignado
+    private int ultimoId = 0; 
     
     @Override
-    public int registrar(String usuario, String password, TipoUsuario tipoUsuario) throws RemoteException {
+    public boolean registrar(String usuario, String password, TipoUsuario tipoUsuario) throws RemoteException {
+        // Base de datos temporal
+        Map<String, String> db = null;
+        // 
+        boolean registrado = false;
         if (tipoUsuario == TipoUsuario.CLIENTE) {
-            clientes.put(usuario, password);
+            db = clientes;
         } else if (tipoUsuario == TipoUsuario.DISTRIBUIDOR) {
-            distribuidores.put(usuario, password);
+            db = distribuidores;
         }
-        return 0;
+        if (db.containsKey(usuario)) {
+            System.out.println("Intento fallido de registro de " + tipoUsuario + ": nombre " + usuario + " en uso.");
+        } else {
+            db.put(usuario, password);
+            registrado = true;
+            System.out.println(TipoUsuario.CLIENTE + " registrado con nombre " + usuario);
+        }
+        return registrado;
     }
 
     @Override
     public int autenticar(String usuario, String password, TipoUsuario tipoUsuario) throws RemoteException {
-	// TODO Auto-generated method stub
-	return 0;
+        // Base de datos temporal
+        Map<String, String> db = null;
+        // Identificador temporal
+        int idTemp = 0;
+        // Establecemos que base de datos vamos a usar
+        if (tipoUsuario == TipoUsuario.CLIENTE) {
+            db = clientes;
+        } else {
+            db = distribuidores;
+        }
+        // Obtenemos el password del usuario de la base de datos
+        String pass = db.get(usuario);
+        if (pass != null && !pass.isEmpty()) {
+            if (usuarioConectado(usuario, TipoUsuario.CLIENTE)) {
+                idTemp = -3;
+                System.out.println("Intento fallido de autenticación de " + tipoUsuario + " con nombre " + usuario + ": usuario ya autenticado.");
+            } else if (pass.equals(password)) {
+                actualizarId();
+                usuariosConectados.put(ultimoId, usuario);
+                idTemp = ultimoId;
+                System.out.println(tipoUsuario + " " + usuario + " se ha autenticado con identificador 1");
+            } else {
+                idTemp = -1;
+                System.out.println(pass);
+                System.out.println(password);
+                System.out.println("Intento fallido de autenticación de " + tipoUsuario + " con nombre " + usuario + ": contraseña errónea.");
+            }
+        } else {
+            idTemp = -2;
+            System.out.println("Intento fallido de autenticación de " + tipoUsuario + " con nombre " + usuario + ": nombre erróneo.");
+        }
+        return idTemp;
     }
 
     @Override
@@ -60,28 +102,36 @@ public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface
     }
 
     @Override
-    public List<String> listarClientes() throws RemoteException {
-        List<String> listaClientes = new ArrayList<String>();
-        if (clientesConectados.size() > 0) {
-            for (Integer cliente : clientesConectados) {
-                listaClientes.add(Integer.toString(cliente));
+    public List<String> listarUsuarios(TipoUsuario tipoUsuario) throws RemoteException {
+        List<String> listaUsuarios = new ArrayList<String>();
+        Map<String, String> db = null;
+        
+        if (tipoUsuario == TipoUsuario.CLIENTE) {
+            db = clientes;
+        } else {
+            db = distribuidores;
+        }
+        if (db.size() > 0) {
+            Iterator it = db.keySet().iterator();
+            while (it.hasNext()) {
+                Object key = it.next();
+                String usuario = (String) key;
+                listaUsuarios.add(usuario + (usuarioConectado(usuario, tipoUsuario) ? " [conectado]" : ""));
             }
         } else {
-            listaClientes.add("No hay clientes conectados");
+            listaUsuarios.add("No hay usuarios " + tipoUsuario + " registrados");
         }
-        return listaClientes;
+        return listaUsuarios;
     }
 
-    @Override
-    public List<String> listarDistribuidores() throws RemoteException {
-        List<String> listaDistribuidores = new ArrayList<String>();
-        if (distribuidoresConectados.size() > 0) {
-            for (Integer cliente : clientesConectados) {
-                listaDistribuidores.add(Integer.toString(cliente));
-            }
-        } else {
-            listaDistribuidores.add("No hay distribuidores conectados");
-        }
-        return listaDistribuidores;
+    private boolean usuarioConectado(String usuario, TipoUsuario tipoUsuario) throws RemoteException {
+        return usuariosConectados.containsValue(usuario);
+    }
+    
+    /**
+     * Aumenta el último identificador
+     */
+    private void actualizarId() {
+        ultimoId = ultimoId + 1;
     }
 }

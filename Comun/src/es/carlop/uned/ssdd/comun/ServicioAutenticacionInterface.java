@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface ServicioAutenticacionInterface extends Remote {
     // Registra un usuario nuevo en el sistema
-    public int registrar(String usuario, String password, TipoUsuario tipoUsuario) throws RemoteException;
+    public boolean registrar(String usuario, String password, TipoUsuario tipoUsuario) throws RemoteException;
     // Autentica un usuario en el sistema
     public int autenticar(String usuario, String password, TipoUsuario tipoUsuario) throws RemoteException;
     // Saca a un usuario del sistema
@@ -22,7 +22,5 @@ public interface ServicioAutenticacionInterface extends Remote {
     // Da de baja a un usuario del sistema
     public boolean baja(int id) throws RemoteException;
     // Devuelve una lista con los clientes
-    public List<String> listarClientes() throws RemoteException;
-    // Devuelve una lista con los distribuidores
-    public List<String> listarDistribuidores() throws RemoteException;
+    public List<String> listarUsuarios(TipoUsuario tipoUsuario) throws RemoteException;
 }
