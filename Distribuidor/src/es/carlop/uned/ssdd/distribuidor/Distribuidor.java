@@ -13,6 +13,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Iterator;
+import java.util.List;
 
 import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
 import es.carlop.uned.ssdd.comun.Oferta;
@@ -141,6 +143,8 @@ public class Distribuidor {
             case 5:
                 mercancia = TipoMercancia.SOJA;
                 break;
+            default:
+                System.out.println("Selecciona el tipo de mercancía correcto.");
         };
         // Pedimos el precio de la oferta
         precio = Float.parseFloat(InterfazGraficaUsuario.pedirDato("Precio"));
@@ -163,7 +167,23 @@ public class Distribuidor {
      */
     private static void quitarOferta() {
         // TODO Auto-generated method stub
+            List<Oferta> ofertas = null;
         
+        InterfazGraficaUsuario.mostrarTitulo("Seleccione la oferta que desea eliminar:");
+        try {
+            ofertas = servicioMercancias.listarOfertasDistribuidor(getId());
+            
+            for (int i = 0; i < ofertas.size(); i++) {
+                Oferta oferta = ofertas.get(i);
+                System.out.println("[" + i + "] " + oferta.getMercancia() + ", " + oferta.getPeso() + ", " + oferta.getPrecio());
+            }
+            int oe = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Oferta a eliminar"));
+            Oferta ofertaEliminar = ofertas.get(oe);
+            servicioMercancias.eliminarOferta(ofertaEliminar);
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /** 

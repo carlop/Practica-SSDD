@@ -41,6 +41,16 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
 
     @Override
     public void eliminarOferta(Oferta oferta) throws RemoteException {
+        for (int i = 0; i < ofertas.size(); i++) {
+            Oferta oe = ofertas.get(i);
+            System.out.println(oe.getId() + "" + oe.getMercancia() + "" + oe.getPeso() + "" + oe.getPrecio());
+            System.out.println(oferta.getId() + "" + oferta.getMercancia() + "" + oferta.getPeso() + "" + oferta.getPrecio());
+            if (oe.equals(oferta)) {
+                ofertas.remove(i);
+                System.out.println("Oferta eliminada: " + oferta.getMercancia() + ", " + oferta.getPeso() + " kilos, " +
+                           oferta.getPrecio() + "€");
+            }
+        }
     }
 
     @Override
@@ -50,29 +60,26 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
 
     @Override
     public List<Oferta> listarOfertas() throws RemoteException {
-//        List<Oferta> listaOfertas = new ArrayList<Oferta>();
-//        
-//        Iterator<Oferta> it = ofertas.iterator();
-//        while (it.hasNext()) {
-//            Oferta oferta= it.next();
-//            listaOfertas.add(oferta);
-//        }
-//
-//        return listaOfertas;
         return ofertas;
     }
 
     @Override
+    public List<Oferta> listarOfertasDistribuidor(int id) throws RemoteException {
+        List<Oferta> listaOfertas = new ArrayList<Oferta>();
+        
+        Iterator<Oferta> it = ofertas.iterator();
+        while (it.hasNext()) {
+            Oferta oferta= it.next();
+            if (oferta.getId() == id) {
+                listaOfertas.add(oferta);
+            }
+        }
+
+        return listaOfertas;
+    }
+
+    @Override
     public List<Demanda> listarDemandas() throws RemoteException {
-//        List<Demanda> listaDemandas = new ArrayList<Demanda>();
-//        
-//        Iterator<Demanda> it = demandas.iterator();
-//        while (it.hasNext()) {
-//            Demanda demanda = it.next();
-//            listaDemandas.add(demanda);
-//        }
-//        // TODO Auto-generated method stub
-//        return null;
         return demandas;
     }
 
