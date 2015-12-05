@@ -91,9 +91,8 @@ public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface
     }
 
     @Override
-    public boolean salir(int id) throws RemoteException {
-	// TODO Auto-generated method stub
-	return false;
+    public void salir(int id) throws RemoteException {
+        usuariosConectados.remove(id);
     }
 
     @Override

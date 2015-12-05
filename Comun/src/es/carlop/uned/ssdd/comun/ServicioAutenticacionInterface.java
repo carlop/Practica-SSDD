@@ -18,7 +18,7 @@ public interface ServicioAutenticacionInterface extends Remote {
     // Autentica un usuario en el sistema
     public int autenticar(String usuario, String password, TipoUsuario tipoUsuario) throws RemoteException;
     // Saca a un usuario del sistema
-    public boolean salir(int id) throws RemoteException;
+    public void salir(int id) throws RemoteException;
     // Da de baja a un usuario del sistema
     public boolean baja(int id) throws RemoteException;
     // Devuelve una lista con los clientes

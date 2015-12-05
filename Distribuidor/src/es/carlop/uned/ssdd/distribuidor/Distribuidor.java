@@ -13,7 +13,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Iterator;
 import java.util.List;
 
 import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
@@ -74,6 +73,7 @@ public class Distribuidor {
                             darseDeBaja();
                             break;
                         case 5:
+                            salir();
                             seleccion = -1;
                             break;
                         }
@@ -200,6 +200,20 @@ public class Distribuidor {
     private static void darseDeBaja() {
         // TODO Auto-generated method stub
         
+    }
+
+    /**
+     * Permite cerrar sesión al distribuidor
+     */
+    private static void salir() {
+        try {
+            servicioAutenticacion.salir(getId());
+            System.out.println("Sesión cerrada correctamente");
+        } catch (RemoteException e) {
+            System.err.println("Ha ocurrido un error y no se ha salido del sistema correctamente.");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**

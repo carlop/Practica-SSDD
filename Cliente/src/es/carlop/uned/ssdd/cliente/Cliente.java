@@ -68,6 +68,7 @@ public class Cliente {
                             InterfazGraficaUsuario.limpiarPantalla();
                             break;
                         case 5:
+                            salir();
                             seleccion = -1;
                             break;
                         }
@@ -139,6 +140,20 @@ public class Cliente {
             servicioMercancias.introducirDemanda(demanda);
         } catch (RemoteException e) {
             System.err.println("Ha habido un error al introducir la demanda. Vuelva a intentarlo.");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Permite cerrar sesión al cliente
+     */
+    private static void salir() {
+        try {
+            servicioAutenticacion.salir(getId());
+            System.out.println("Sesión cerrada correctamente");
+        } catch (RemoteException e) {
+            System.err.println("Ha ocurrido un error y no se ha salido del sistema correctamente.");
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
