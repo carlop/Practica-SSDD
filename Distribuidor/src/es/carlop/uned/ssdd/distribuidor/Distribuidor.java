@@ -126,7 +126,7 @@ public class Distribuidor {
         // Mostramos el título
         InterfazGraficaUsuario.mostrarTitulo("Introduce una oferta");
         // Pedimos el tipo de mercancia
-        int tm = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Tipo de mercancia:\n[1] Arroz\n[2] Lentejas\n[2] Garbanzos\n[3] Judias\n[4] Soja"));
+        int tm = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Tipo de mercancia:\n[1] Arroz\n[2] Lentejas\n[3] Garbanzos\n[4] Judias\n[5] Soja"));
         switch (tm) {
             case 1:
                 mercancia = TipoMercancia.ARROZ;

@@ -166,7 +166,7 @@ public class Cliente {
                 System.out.println("Ya está registrado. Ahora inicie sesión para continuar.");
                 autenticarCliente();
             } else {
-                System.out.println("Ya existe un usuario " + TipoUsuario.CLIENTE + " con este nombre. Por favor, seleccione uno diferente.");
+                System.out.println("Ya existe un usuario con este nombre. Por favor, seleccione uno diferente.");
             }
         } catch (RemoteException e) {
             System.err.println("No se ha podido registrar. Inténtelo de nuevo.");
