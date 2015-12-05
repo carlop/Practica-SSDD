@@ -75,7 +75,7 @@ public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface
                 actualizarId();
                 usuariosConectados.put(ultimoId, usuario);
                 idTemp = ultimoId;
-                System.out.println(tipoUsuario + " " + usuario + " se ha autenticado con identificador 1");
+                System.out.println(tipoUsuario + " " + usuario + " se ha autenticado con identificador " + idTemp + ".");
             } else {
                 idTemp = -1;
                 System.out.println(pass);
@@ -112,14 +112,14 @@ public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface
             db = distribuidores;
         }
         if (db.size() > 0) {
-            Iterator it = db.keySet().iterator();
+            Iterator<String> it = db.keySet().iterator();
             while (it.hasNext()) {
                 Object key = it.next();
                 String usuario = (String) key;
                 listaUsuarios.add(usuario + (usuarioConectado(usuario, tipoUsuario) ? " [conectado]" : ""));
             }
         } else {
-            listaUsuarios.add("No hay usuarios " + tipoUsuario + " registrados");
+            listaUsuarios.add("No hay ningún " + tipoUsuario + " registrado.");
         }
         return listaUsuarios;
     }
