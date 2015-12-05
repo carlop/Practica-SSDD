@@ -77,4 +77,20 @@ public class Oferta implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+    
+    /**
+     * Compara si dos ofertas son iguales
+     * @param otraOferta la otra oferta a comparar
+     * @return true si son iguales las dos ofertas
+     */
+    public boolean equals(Oferta otraOferta) {
+        if (!(otraOferta instanceof Oferta)) {
+            return false;
+        }
+        
+        Oferta ofertaTemp = (Oferta) otraOferta;
+        
+        return (this.getId() == ofertaTemp.getId()) && (this.getMercancia() == ofertaTemp.getMercancia()) &&
+               (this.getPeso() == ofertaTemp.getPeso()) && (this.getPrecio() == ofertaTemp.getPrecio());
+    }
 }
