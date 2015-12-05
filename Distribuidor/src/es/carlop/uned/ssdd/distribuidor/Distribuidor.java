@@ -15,13 +15,19 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
+import es.carlop.uned.ssdd.comun.Oferta;
 import es.carlop.uned.ssdd.comun.ServicioAutenticacionInterface;
+import es.carlop.uned.ssdd.comun.ServicioMercanciasInterface;
+import es.carlop.uned.ssdd.comun.TipoMercancia;
 import es.carlop.uned.ssdd.comun.TipoUsuario;
 
 public class Distribuidor {
 
     // Servicio de autenticación
     private static ServicioAutenticacionInterface servicioAutenticacion;
+
+    // Servicio de mercancias
+    private static ServicioMercanciasInterface servicioMercancias;
     
     // Identificador
     private static int id = 0;
@@ -32,9 +38,15 @@ public class Distribuidor {
     public static void main(String[] args) throws IOException {
 
         try {
-            Registry registry = LocateRegistry.getRegistry(8888);
-            servicioAutenticacion = (ServicioAutenticacionInterface) registry.lookup("servicioautenticacion");
+            // Conectamos al servicio de autenticacion
+            Registry registroAutenticacion = LocateRegistry.getRegistry(8888);
+            servicioAutenticacion = (ServicioAutenticacionInterface) registroAutenticacion.lookup("servicioautenticacion");
             System.out.println("Distribuidor conectado al servicio de autenticación...");
+            
+            // Conectamos al servicio de mercancias
+            Registry registroMercancias = LocateRegistry.getRegistry(8889);
+            servicioMercancias = (ServicioMercanciasInterface) registroMercancias.lookup("serviciomercancias");
+            System.out.println("Distribuidor conectado al servicio de mercancías...");
 
             int seleccion = 0;
             do {
@@ -45,15 +57,19 @@ public class Distribuidor {
                         switch (opcion) {
                         case 1:
                             InterfazGraficaUsuario.limpiarPantalla();
+                            introducirOferta();
                             break;
                         case 2:
                             InterfazGraficaUsuario.limpiarPantalla();
+                            quitarOferta();
                             break;
                         case 3:
                             InterfazGraficaUsuario.limpiarPantalla();
+                            mostrarVentas();
                             break;
                         case 4:
                             InterfazGraficaUsuario.limpiarPantalla();
+                            darseDeBaja();
                             break;
                         case 5:
                             seleccion = -1;
@@ -91,6 +107,80 @@ public class Distribuidor {
         }
 
     }
+    
+    /**
+     * Introduce una oferta en el servicio de mercancias
+     */
+    private static void introducirOferta() {
+        // Oferta que vamos a introducir
+        Oferta oferta = null;
+        // Tipo de mercancía de la oferta
+        TipoMercancia mercancia = null;
+        // Precio de la oferta
+        float precio = 0f;
+        // Peso de la oferta
+        float peso = 0f;
+
+        // Mostramos el título
+        InterfazGraficaUsuario.mostrarTitulo("Introduce una oferta");
+        // Pedimos el tipo de mercancia
+        int tm = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Tipo de mercancia:\n[1] Arroz\n[2] Lentejas\n[2] Garbanzos\n[3] Judias\n[4] Soja"));
+        switch (tm) {
+            case 1:
+                mercancia = TipoMercancia.ARROZ;
+                break;
+            case 2:
+                mercancia = TipoMercancia.LENTEJAS;
+                break;
+            case 3:
+                mercancia = TipoMercancia.GARBANZOS;
+                break;
+            case 4:
+                mercancia = TipoMercancia.JUDIAS;
+                break;
+            case 5:
+                mercancia = TipoMercancia.SOJA;
+                break;
+        };
+        // Pedimos el precio de la oferta
+        precio = Float.parseFloat(InterfazGraficaUsuario.pedirDato("Precio"));
+        // Pedimos el peso de la oferta
+        peso = Float.parseFloat(InterfazGraficaUsuario.pedirDato("Peso"));
+        // Iniciamos la oferta
+        oferta = new Oferta(mercancia, peso, peso, id);
+        try {
+            servicioMercancias.introducirOferta(oferta);
+            System.out.println("Oferta introducida correctamente");
+        } catch (RemoteException e) {
+            System.err.println("Ha habido un error al introducir la oferta. Vuelva a intentarlo.");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Quita una de las ofertas añadidas en el servicio de mercancías
+     */
+    private static void quitarOferta() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /** 
+     * Muestra las ventas realizadas
+     */
+    private static void mostrarVentas() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /**
+     * Da de baja al distribuidor del sistema
+     */
+    private static void darseDeBaja() {
+        // TODO Auto-generated method stub
+        
+    }
 
     /**
      * Registra un usuario en el servicio de autenticación
@@ -101,6 +191,7 @@ public class Distribuidor {
         // Contraseña de usuario
         String password = "";
 
+        // Mostramos el título
         InterfazGraficaUsuario.mostrarTitulo("Registro de " + TipoUsuario.DISTRIBUIDOR);
         // Pedimos el usuario
         usuario = InterfazGraficaUsuario.pedirDato("Usuario");
