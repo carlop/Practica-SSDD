@@ -8,7 +8,12 @@
  */
 package es.carlop.uned.ssdd.comun;
 
-public class Oferta {
+import java.io.Serializable;
+
+public class Oferta implements Serializable {
+
+    private static final long serialVersionUID = 4481373006800701140L;
+
     // Tipo de mercancía
     private TipoMercancia mercancia;
     
@@ -16,13 +21,17 @@ public class Oferta {
     private float precio;
     
     // Peso de la oferta
-    private float kilos;
+    private float peso;
+    
+    // Identificador del distribuidor que hace la oferta
+    private int id;
     
     // Constructor
-    public Oferta(TipoMercancia mercancia, float precio, float kilos) {
+    public Oferta(TipoMercancia mercancia, float precio, float peso, int id) {
         this.setMercancia(mercancia);
         this.setPrecio(precio);
-        this.setKilos(kilos);
+        this.setPeso(peso);
+        this.setId(id);
     }
 
     // Devuelve el tipo de mercancía de la oferta
@@ -46,12 +55,26 @@ public class Oferta {
     }
 
     // Deveuelve los kilos de la oferta
-    public float getKilos() {
-        return kilos;
+    public float getPeso() {
+        return peso;
     }
 
     // Establece los kilos de la oferta
-    public void setKilos(float kilos) {
-        this.kilos = kilos;
+    public void setPeso(float peso) {
+        this.peso = peso;
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
     }
 }
