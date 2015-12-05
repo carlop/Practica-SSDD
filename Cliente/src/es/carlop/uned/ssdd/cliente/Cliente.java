@@ -13,14 +13,20 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import es.carlop.uned.ssdd.comun.Demanda;
 import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
 import es.carlop.uned.ssdd.comun.ServicioAutenticacionInterface;
+import es.carlop.uned.ssdd.comun.ServicioMercanciasInterface;
+import es.carlop.uned.ssdd.comun.TipoMercancia;
 import es.carlop.uned.ssdd.comun.TipoUsuario;
 
 public class Cliente {
 
     // Servicio de autenticación
     private static ServicioAutenticacionInterface servicioAutenticacion;
+
+    // Servicio de mercancias
+    private static ServicioMercanciasInterface servicioMercancias;
     
     // Identificador
     private static int id = 0;
@@ -31,9 +37,15 @@ public class Cliente {
     public static void main(String[] args) throws IOException {
 
         try {
-            Registry registry = LocateRegistry.getRegistry(8888);
-            servicioAutenticacion = (ServicioAutenticacionInterface) registry.lookup("servicioautenticacion");
+            // Conectamos al servicio de autenticacion
+            Registry registryAutenticacion = LocateRegistry.getRegistry(8888);
+            servicioAutenticacion = (ServicioAutenticacionInterface) registryAutenticacion.lookup("servicioautenticacion");
             System.out.println("Cliente conectado al servicio de autenticación...");
+
+            // Conectamos al servicio de mercancias
+            Registry registroMercancias = LocateRegistry.getRegistry(8889);
+            servicioMercancias = (ServicioMercanciasInterface) registroMercancias.lookup("serviciomercancias");
+            System.out.println("Distribuidor conectado al servicio de mercancías...");
 
             int seleccion = 0;
             do {
@@ -44,6 +56,7 @@ public class Cliente {
                         switch (opcion) {
                         case 1:
                             InterfazGraficaUsuario.limpiarPantalla();
+                            introducirDemanda();
                             break;
                         case 2:
                             InterfazGraficaUsuario.limpiarPantalla();
@@ -89,6 +102,46 @@ public class Cliente {
             System.err.println(e.getMessage());
         }
 
+    }
+
+    /**
+     * Introduce una demanda en el servicio de mercancias
+     */
+    private static void introducirDemanda() {
+        // Demanda que vamos a realizar
+        Demanda demanda = null;
+        // Tipo de mercancía de la demanda
+        TipoMercancia mercancia = null;
+        
+        // Mostramos el título
+        InterfazGraficaUsuario.mostrarTitulo("Introduce una demanda");
+        // Pedimos el tipo de mercancia
+        int tm = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Tipo de mercancia:\n[1] Arroz\n[2] Lentejas\n[2] Garbanzos\n[3] Judias\n[4] Soja"));
+        switch (tm) {
+            case 1:
+                mercancia = TipoMercancia.ARROZ;
+                break;
+            case 2:
+                mercancia = TipoMercancia.LENTEJAS;
+                break;
+            case 3:
+                mercancia = TipoMercancia.GARBANZOS;
+                break;
+            case 4:
+                mercancia = TipoMercancia.JUDIAS;
+                break;
+            case 5:
+                mercancia = TipoMercancia.SOJA;
+                break;
+        };
+        demanda = new Demanda(mercancia, getId());
+        try {
+            servicioMercancias.introducirDemanda(demanda);
+        } catch (RemoteException e) {
+            System.err.println("Ha habido un error al introducir la demanda. Vuelva a intentarlo.");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
