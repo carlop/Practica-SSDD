@@ -16,25 +16,40 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
 import es.carlop.uned.ssdd.comun.Codebase;
+import es.carlop.uned.ssdd.comun.Demanda;
 import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
+import es.carlop.uned.ssdd.comun.Oferta;
 import es.carlop.uned.ssdd.comun.ServicioAutenticacionInterface;
+import es.carlop.uned.ssdd.comun.ServicioMercanciasInterface;
 import es.carlop.uned.ssdd.comun.TipoUsuario;
 
 public class Regulador {
 
+    // Servicio de autenticación
     private static ServicioAutenticacionInterface remoteServicioAutenticacion;
+    
+    // Servicio de mercancias
+    private static ServicioMercanciasInterface remoteServicioMercancias;
 
     public static void main(String[] args) throws IOException {
         
         try {
+            // Levantamos el servicio de autenticación
             Codebase.setCodeBase(ServicioAutenticacionInterface.class);
-
-            Registry registry = LocateRegistry.createRegistry(8888);
-
+            Registry registroAutenticacion = LocateRegistry.createRegistry(8888);
             ServicioAutenticacionInterface servicioAutenticacion = new ServicioAutenticacionImpl();
             remoteServicioAutenticacion = (ServicioAutenticacionInterface) UnicastRemoteObject.exportObject(servicioAutenticacion, 8888);
-            registry.rebind("servicioautenticacion", remoteServicioAutenticacion);
+            registroAutenticacion.rebind("servicioautenticacion", remoteServicioAutenticacion);
             System.out.println("Servicio de autenticacion preparado...");
+            
+            // Levantamos el servicio de mercancias
+            Codebase.setCodeBase(ServicioMercanciasInterface.class);
+            Registry registroMercancias = LocateRegistry.createRegistry(8889);
+            ServicioMercanciasInterface servicioMercancias = new ServicioMercanciasImpl();
+            remoteServicioMercancias = (ServicioMercanciasInterface) UnicastRemoteObject.exportObject(servicioMercancias, 8889);
+            registroMercancias.rebind("serviciomercancias", servicioMercancias);
+            System.out.println("Servicio de mercancías preparado...");
+            
             int opcion = 0;
             String[] opcionesMenu = {"Listar ofertas actuales.", "Listar demandas actuales.", "Listar clientes.",
                     "Listar distribuidores."};
@@ -43,9 +58,11 @@ public class Regulador {
                 switch (opcion) {
                 case 1:
                     InterfazGraficaUsuario.limpiarPantalla();
+                    listarOfertasActuales();
                     break;
                 case 2:
                     InterfazGraficaUsuario.limpiarPantalla();
+                    listarDemandasActuales();
                     break;
                 case 3:
                     InterfazGraficaUsuario.limpiarPantalla();
@@ -69,6 +86,38 @@ public class Regulador {
             System.exit(0);
         }
         
+    }
+
+    private static void listarOfertasActuales() {
+        InterfazGraficaUsuario.mostrarTitulo("Ofertas actuales");
+        try {
+            List<Oferta> listaOfertas = remoteServicioMercancias.listarOfertas();
+            if (listaOfertas.size() > 0) {
+                for (Oferta oferta : listaOfertas) {
+                    System.out.println(oferta.getId() + ": " + oferta.getMercancia() + ", " + oferta.getPrecio() + "€, " + oferta.getPeso() + "kg, ");
+                }
+            } else {
+                System.out.println("No hay ofertas.");
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void listarDemandasActuales() {
+        InterfazGraficaUsuario.mostrarTitulo("Demandas actuales");
+        try {
+            List<Demanda> listaDemandas = remoteServicioMercancias.listarDemandas();
+            if (listaDemandas.size() >0) {
+                for (Demanda demanda : listaDemandas) {
+                    System.out.println(demanda.getId() + ": " + demanda.getMercancia());
+                }
+            } else {
+                System.out.println("No hay demandas.");
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void listarUsuarios(TipoUsuario tipoUsuario) {
