@@ -23,11 +23,9 @@ import es.carlop.uned.ssdd.comun.TipoUsuario;
 public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface {
 
     // Clientes registrados en el sistema
-//    private Map<String, String> clientes = new HashMap<String, String>();
     private Map<String, String> clientes = null;
 
     // Distribuidores registrados en el sistema
-//    private Map<String, String> distribuidores = new HashMap<String, String>();
     private Map<String, String> distribuidores = null;
     
     // Usuarios conectados
