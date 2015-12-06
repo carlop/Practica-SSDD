@@ -50,7 +50,7 @@ public class Cliente {
             int seleccion = 0;
             do {
                 if (getId() > 0) {
-                    String[] opcionesMenu = {"Introducir demanda.", "Recibir ofertas.", "Comprar mercancía.", "Darse de baja en el sistema"};
+                    String[] opcionesMenu = {"Introducir demanda", "Recibir ofertas", "Comprar mercancía", "Darse de baja en el sistema"};
                     do {
                         opcion = InterfazGraficaUsuario.mostrarMenu("Cliente", opcionesMenu);
                         switch (opcion) {
@@ -74,7 +74,7 @@ public class Cliente {
                         }
                     } while (opcion != 5);
                 } else {
-                    String[] opcionesMenu = {"Registrar un nuevo usuario.", "Autenticarse en el sistema (hacer login)."};
+                    String[] opcionesMenu = {"Registrar un nuevo usuario", "Autenticarse en el sistema (hacer login)"};
                     do {
                         opcion = InterfazGraficaUsuario.mostrarMenu("Cliente", opcionesMenu);
                         switch (opcion) {
@@ -96,7 +96,7 @@ public class Cliente {
             System.out.println("Cerrando el cliente...");
             System.exit(0);
         } catch (RemoteException e) {
-            System.err.println("No se ha podido conectar con el servicio de autenticación. Probablemente tengas que ejecutar regulador primero.");
+            System.err.println("No se ha podido conectar con el servicio de autenticación, probablemente tengas que ejecutar regulador primero");
             System.err.println(e.getMessage());
         } catch (NotBoundException e) {
             System.err.println("NotBoundException");
@@ -139,7 +139,7 @@ public class Cliente {
         try {
             servicioMercancias.introducirDemanda(demanda);
         } catch (RemoteException e) {
-            System.err.println("Ha habido un error al introducir la demanda. Vuelva a intentarlo.");
+            System.err.println("Ha habido un error al introducir la demanda, vuelva a intentarlo");
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
@@ -153,7 +153,7 @@ public class Cliente {
             servicioAutenticacion.salir(getId());
             System.out.println("Sesión cerrada correctamente");
         } catch (RemoteException e) {
-            System.err.println("Ha ocurrido un error y no se ha salido del sistema correctamente.");
+            System.err.println("Ha ocurrido un error y no se ha salido del sistema correctamente");
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
@@ -178,13 +178,13 @@ public class Cliente {
             // registramos el cliente en el servicio de auntenticación
             boolean registrado = servicioAutenticacion.registrar(usuario, password, TipoUsuario.CLIENTE);
             if (registrado) {
-                System.out.println("Ya está registrado. Ahora inicie sesión para continuar.");
+                System.out.println("Ya está registrado, inicie sesión para continuar");
                 autenticarCliente();
             } else {
-                System.out.println("Ya existe un usuario con este nombre. Por favor, seleccione uno diferente.");
+                System.out.println("Ya existe un usuario con este nombre, seleccione uno diferente");
             }
         } catch (RemoteException e) {
-            System.err.println("No se ha podido registrar. Inténtelo de nuevo.");
+            System.err.println("No se ha podido registrar, inténtelo de nuevo");
             e.printStackTrace();
         }
     }
@@ -214,11 +214,11 @@ public class Cliente {
                 opcion = 3;
                 System.out.println("Autenticación correcta. Su identificador es: " + getId());
             } else if (idTemp == -1) {
-                System.out.println("Contraseña errónea.");
+                System.out.println("Contraseña errónea");
             } else if (idTemp == -2) {
                 System.out.println("No existe ningún " + TipoUsuario.CLIENTE + " registrado con nombre " + usuario);
             } else if (idTemp == -3) {
-                System.out.println("¡ups! " + usuario + " ya está autenticado en el sistema.");
+                System.out.println("¡ups! " + usuario + " ya está autenticado en el sistema");
             }
         } catch (RemoteException e) {
             System.err.println("No se ha podido autenticar");

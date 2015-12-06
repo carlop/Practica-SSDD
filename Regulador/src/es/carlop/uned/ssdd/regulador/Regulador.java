@@ -50,6 +50,9 @@ public class Regulador {
             registroMercancias.rebind("serviciomercancias", servicioMercancias);
             System.out.println("Servicio de mercancías preparado...");
             
+            // Cargamos los datos si existen
+            cargarDatos();
+            
             int opcion = 0;
             String[] opcionesMenu = {"Listar ofertas actuales.", "Listar demandas actuales.", "Listar clientes.",
                     "Listar distribuidores."};
@@ -72,8 +75,9 @@ public class Regulador {
                     InterfazGraficaUsuario.limpiarPantalla();
                     listarUsuarios(TipoUsuario.DISTRIBUIDOR);
                     break;
+                case 5:
+                    guardarDatos();
                 default:
-            InterfazGraficaUsuario.limpiarPantalla();
                     break;
                 }
             } while (opcion != 5);
@@ -132,6 +136,26 @@ public class Regulador {
                 System.out.println(usuario);
             }
         } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private static void guardarDatos() {
+        try {
+            remoteServicioAutenticacion.guardarDatos();
+            remoteServicioMercancias.guardarDatos();
+        } catch (RemoteException e) {
+            System.err.println("Error al solicitar guardar los datos de clientes y distribuidores");
+            e.printStackTrace();
+        }
+    }
+    
+    private static void cargarDatos() {
+        try {
+            remoteServicioAutenticacion.cargarDatos();
+            remoteServicioMercancias.cargarDatos();
+        } catch (RemoteException e) {
+            System.err.println("Error al solicitar cargar los datos de clientes y distribuidores");
             e.printStackTrace();
         }
     }

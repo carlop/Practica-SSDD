@@ -23,4 +23,8 @@ public interface ServicioAutenticacionInterface extends Remote {
     public boolean baja(int id) throws RemoteException;
     // Devuelve una lista con los clientes
     public List<String> listarUsuarios(TipoUsuario tipoUsuario) throws RemoteException;
+    // Guarda los datos de los usuarios a un archivo
+    public void guardarDatos() throws RemoteException;
+    // Carga los datos de los usuraios
+    public void cargarDatos() throws RemoteException;
 }

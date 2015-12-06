@@ -173,13 +173,17 @@ public class Distribuidor {
         try {
             ofertas = servicioMercancias.listarOfertasDistribuidor(getId());
             
-            for (int i = 0; i < ofertas.size(); i++) {
-                Oferta oferta = ofertas.get(i);
-                System.out.println("[" + i + "] " + oferta.getMercancia() + ", " + oferta.getPeso() + ", " + oferta.getPrecio());
+            if (ofertas.size() > 0) {
+                for (int i = 0; i < ofertas.size(); i++) {
+                    Oferta oferta = ofertas.get(i);
+                    System.out.println("[" + i + "] " + oferta.getMercancia() + ", " + oferta.getPeso() + ", " + oferta.getPrecio());
+                }
+                int oe = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Oferta a eliminar"));
+                Oferta ofertaEliminar = ofertas.get(oe);
+                servicioMercancias.eliminarOferta(ofertaEliminar);
+            } else {
+                System.out.println("No ha introducido ninguna oferta");
             }
-            int oe = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Oferta a eliminar"));
-            Oferta ofertaEliminar = ofertas.get(oe);
-            servicioMercancias.eliminarOferta(ofertaEliminar);
         } catch (RemoteException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

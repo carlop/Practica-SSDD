@@ -8,10 +8,13 @@
  */
 package es.carlop.uned.ssdd.regulador;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import es.carlop.uned.ssdd.comun.Db;
 import es.carlop.uned.ssdd.comun.Demanda;
 import es.carlop.uned.ssdd.comun.Oferta;
 import es.carlop.uned.ssdd.comun.ServicioMercanciasInterface;
@@ -19,12 +22,10 @@ import es.carlop.uned.ssdd.comun.ServicioMercanciasInterface;
 public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
 
     // Ofertas disponibles
-//    private Map<Integer, Oferta> ofertas = new HashMap<Integer, Oferta>();
-    private List<Oferta> ofertas = new ArrayList<Oferta>();
+    private List<Oferta> ofertas = null;
 
     // Demandas disponibles
-//    private Map<Integer, TipoMercancia> demandas = new HashMap<Integer, TipoMercancia>();
-    private List<Demanda> demandas = new ArrayList<Demanda>();
+    private List<Demanda> demandas = null;
 
     @Override
     public void introducirDemanda(Demanda demanda) throws RemoteException {
@@ -81,6 +82,34 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
     @Override
     public List<Demanda> listarDemandas() throws RemoteException {
         return demandas;
+    }
+    
+    @Override
+    public void guardarDatos() throws RemoteException {
+        try {
+            Db.guardarDatos("ofertas.db", ofertas);
+            Db.guardarDatos("demandas.db", demandas);
+        } catch (IOException e) {
+            System.err.println("No se han podido guardar los datos de ofertas y demandas");
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void cargarDatos() throws RemoteException {
+        try {
+            ofertas = (List<Oferta>) Db.leerDatos("ofertas.db", 2);
+            if (ofertas == null) {
+                ofertas = new ArrayList<Oferta>();
+            }
+            demandas = (List<Demanda>) Db.leerDatos("demandas.db", 2);
+            if (demandas == null) {
+                demandas = new ArrayList<Demanda>();
+            }
+        } catch (IOException e) {
+            System.err.println("no se han podido cargar los datos de ofertas y demandas");
+            e.printStackTrace();
+        }
     }
 
 }

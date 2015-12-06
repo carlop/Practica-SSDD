@@ -25,6 +25,10 @@ public interface ServicioMercanciasInterface extends Remote {
     public List<Oferta> listarOfertas() throws RemoteException;
     // Devuelve una lista con todas las demandas actuales
     public List<Demanda> listarDemandas() throws RemoteException;
-    // Devuenve una lista con las ofertas del distribuidor indicado
+    // Devuelve una lista con las ofertas del distribuidor indicado
     public List<Oferta> listarOfertasDistribuidor(int id) throws RemoteException;
+    // Guarda los datos de ofertas y demandas en un archivo
+    public void guardarDatos() throws RemoteException;
+    // Carga los datos de ofertas y demandas
+    public void cargarDatos() throws RemoteException;
 }
