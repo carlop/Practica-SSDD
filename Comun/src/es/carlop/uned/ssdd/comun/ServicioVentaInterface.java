@@ -8,6 +8,14 @@
  */
 package es.carlop.uned.ssdd.comun;
 
-public interface ServicioVentaInterface {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
+public interface ServicioVentaInterface extends Remote {
+    // Muestra las ventas realizadas por el distribuidor
+    public void mostarVentas() throws RemoteException;
+    // Compra una de las ofertas del distribuidor
+    public void comprarMercancia() throws RemoteException;
+    // Guarda las ventas realizadas en un fichero
+    public void guardarVentas() throws RemoteException;
 }
