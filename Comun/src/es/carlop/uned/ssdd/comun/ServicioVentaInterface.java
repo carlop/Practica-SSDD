@@ -16,8 +16,10 @@ public interface ServicioVentaInterface extends Remote {
     public void mostarVentas() throws RemoteException;
     // Compra una de las ofertas del distribuidor
     public void comprarMercancia() throws RemoteException;
-    // Guarda las ventas realizadas por el distribuidor
-    public void guardarVentas() throws RemoteException;
-    // Carga las ventas realizadas por el distribuidor
-    public void cargarVentas() throws RemoteException;
+    // Guarda los datos del servicio de ventas
+    public void guardarDatos() throws RemoteException;
+    // Carga los datos del servicio de ventas
+    public void cargarDatos() throws RemoteException;
+    // Establece el identificador del distribuidor
+    public void setId(String id) throws RemoteException;
 }

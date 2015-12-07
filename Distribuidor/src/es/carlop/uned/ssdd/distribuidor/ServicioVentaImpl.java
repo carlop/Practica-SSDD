@@ -1,11 +1,13 @@
 package es.carlop.uned.ssdd.distribuidor;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import es.carlop.uned.ssdd.comun.Db;
 import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
 import es.carlop.uned.ssdd.comun.Oferta;
 import es.carlop.uned.ssdd.comun.ServicioVentaInterface;
@@ -14,6 +16,9 @@ public class ServicioVentaImpl implements ServicioVentaInterface {
 
     // Ventas realizadas por el distribuidor
     private Map<String, List<Oferta>> ventas = new HashMap<String, List<Oferta>>();
+    
+    // Identificador del distribuidor
+    private String id;
 
     @Override
     public void mostarVentas() throws RemoteException {
@@ -40,15 +45,42 @@ public class ServicioVentaImpl implements ServicioVentaInterface {
     }
 
     @Override
-    public void guardarVentas() throws RemoteException {
-        // TODO Auto-generated method stub
-        
+    public void guardarDatos() throws RemoteException {
+        try {
+            Db.guardarDatos("distribuidor" + getId() + ".db", ventas);
+        } catch (IOException e) {
+            System.err.println("Ha habido un error al guardar los datos, inténtelo de nuevo");
+            System.err.print(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void cargarVentas() throws RemoteException {
-        // TODO Auto-generated method stub
-        
+    public void cargarDatos() throws RemoteException {
+        try {
+            ventas = (Map<String, List<Oferta>>) Db.leerDatos("distribuidor" + getId() + ".db", 3);
+            if (ventas == null) {
+                ventas = new HashMap<String, List<Oferta>>();
+            }
+        } catch (IOException e) {
+            System.err.println("No se han podido cargar los datos del distribuidor");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    @Override
+    public void setId(String id) throws RemoteException {
+        this.id = id;
     }
 
 }

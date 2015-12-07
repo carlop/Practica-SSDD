@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Db {
     
@@ -47,6 +48,9 @@ public class Db {
                 } else if (tipo ==  2) {
                     datos = new ArrayList<>();
                     datos = (ArrayList<?>) ois.readObject();
+                } else if (tipo == 3) {
+                    datos = new HashMap<String, List<Oferta>>();
+                    datos = (HashMap<?, ?>) ois.readObject();
                 }
                 ois.close();
                 fis.close();

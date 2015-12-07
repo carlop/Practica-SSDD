@@ -227,6 +227,7 @@ public class Distribuidor {
      */
     private static void salir() {
         try {
+            remoteServicioVenta.guardarDatos();
             servicioAutenticacion.salir(getId());
             System.out.println("Sesión cerrada correctamente");
         } catch (RemoteException e) {
@@ -310,6 +311,8 @@ public class Distribuidor {
         try {
             registroVenta = LocateRegistry.createRegistry(puerto);
             ServicioVentaInterface servicioVenta = new ServicioVentaImpl();
+            servicioVenta.setId(String.valueOf(getId()));
+            servicioVenta.cargarDatos();
             remoteServicioVenta = (ServicioVentaInterface) UnicastRemoteObject.exportObject(servicioVenta, puerto);
             registroVenta.rebind("servicioventa" + getId(), remoteServicioVenta);
         } catch (AccessException e) {
