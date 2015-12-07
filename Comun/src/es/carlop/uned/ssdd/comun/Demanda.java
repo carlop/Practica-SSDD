@@ -58,4 +58,18 @@ public class Demanda implements Serializable {
         this.id = id;
     }
 
+    /**
+     * Compara si dos demandas son iguales
+     * @param otraDemanda la otra demanda a comparar
+     * @return true si son iguales las dos demandas
+     */
+    public boolean equals(Demanda otraDemanda) {
+        if (!(otraDemanda instanceof Demanda)) {
+            return false;
+        }
+        
+        Demanda demandaTemp = (Demanda) otraDemanda;
+        
+        return (this.getId().equals(demandaTemp.getId())) && (this.getMercancia() == demandaTemp.getMercancia());
+    }
 }

@@ -90,7 +90,7 @@ public class Oferta implements Serializable {
         
         Oferta ofertaTemp = (Oferta) otraOferta;
         
-        return (this.getId() == ofertaTemp.getId()) && (this.getMercancia() == ofertaTemp.getMercancia()) &&
+        return (this.getId().equals(ofertaTemp.getId())) && (this.getMercancia() == ofertaTemp.getMercancia()) &&
                (this.getPeso() == ofertaTemp.getPeso()) && (this.getPrecio() == ofertaTemp.getPrecio());
     }
 }
