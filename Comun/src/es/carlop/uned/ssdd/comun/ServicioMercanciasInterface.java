@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface ServicioMercanciasInterface extends Remote {
     // Introduce una demanda de una mercancía por el cliente
-    public void introducirDemanda(Demanda demanda) throws RemoteException;
+    public int introducirDemanda(Demanda demanda) throws RemoteException;
     // Introduce una oferta de una mercancía por el distribuidor
     public void introducirOferta(Oferta oferta) throws RemoteException;
     // Elimina una oferta de una mercancía por el distribuidor

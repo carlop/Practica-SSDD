@@ -28,9 +28,30 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
     private List<Demanda> demandas = null;
 
     @Override
-    public void introducirDemanda(Demanda demanda) throws RemoteException {
-        demandas.add(demanda);
-        System.out.println("Nueva demanda introducida: " + demanda.getMercancia());
+    public int introducirDemanda(Demanda demanda) throws RemoteException {
+        int retorno = 0;
+        boolean anadirDemanda = true;
+        if (demandas.size() > 0) {
+            for (int i = 0; i < demandas.size(); i++) {
+                if (anadirDemanda) {
+                    Demanda demandaTemp = demandas.get(i);
+                    if (demandaTemp.equals(demanda)) {
+                        anadirDemanda = false;
+                        retorno = -1;
+                    }
+                }
+            }
+            if (anadirDemanda) {
+            demandas.add(demanda);
+            System.out.println("Nueva demanda introducida: " + demanda.getMercancia());
+            } else {
+                        System.out.println("Ya tiene una demanda de " + demanda.getMercancia());
+            }
+        } else {
+            demandas.add(demanda);
+            System.out.println("Nueva demanda introducida: " + demanda.getMercancia());
+        }
+        return retorno;
     }
 
     @Override
@@ -44,8 +65,6 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
     public void eliminarOferta(Oferta oferta) throws RemoteException {
         for (int i = 0; i < ofertas.size(); i++) {
             Oferta oe = ofertas.get(i);
-            System.out.println(oe.getId() + "" + oe.getMercancia() + "" + oe.getPeso() + "" + oe.getPrecio());
-            System.out.println(oferta.getId() + "" + oferta.getMercancia() + "" + oferta.getPeso() + "" + oferta.getPrecio());
             if (oe.equals(oferta)) {
                 ofertas.remove(i);
                 System.out.println("Oferta eliminada: " + oferta.getMercancia() + ", " + oferta.getPeso() + " kilos, " +

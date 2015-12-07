@@ -63,6 +63,7 @@ public class Cliente {
                             break;
                         case 2:
                             InterfazGraficaUsuario.limpiarPantalla();
+                            recibirOfertas();
                             break;
                         case 3:
                             InterfazGraficaUsuario.limpiarPantalla();
@@ -120,7 +121,7 @@ public class Cliente {
         // Mostramos el título
         InterfazGraficaUsuario.mostrarTitulo("Introduce una demanda");
         // Pedimos el tipo de mercancia
-        int tm = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Tipo de mercancia:\n[1] Arroz\n[2] Lentejas\n[2] Garbanzos\n[3] Judias\n[4] Soja"));
+        int tm = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Tipo de mercancia:\n[1] Arroz\n[2] Lentejas\n[3] Garbanzos\n[4] Judias\n[5] Soja"));
         switch (tm) {
             case 1:
                 mercancia = TipoMercancia.ARROZ;
@@ -140,12 +141,24 @@ public class Cliente {
         };
         demanda = new Demanda(mercancia, getId());
         try {
-            servicioMercancias.introducirDemanda(demanda);
+            int op = servicioMercancias.introducirDemanda(demanda);
+            if (op == 0) {
+                System.out.println("Nueva demanda de " + demanda.getMercancia() + " introducida");
+            } else {
+                System.out.println("Ya tiene una demanda de " + demanda.getMercancia() + " previa");
+            }
         } catch (RemoteException e) {
             System.err.println("Ha habido un error al introducir la demanda, vuelva a intentarlo");
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * Recibe las ofertas disponibles para las demandas del cliente
+     */
+    private static void recibirOfertas() {
+        
     }
     
     /**
