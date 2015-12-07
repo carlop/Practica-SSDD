@@ -24,10 +24,10 @@ public class Oferta implements Serializable {
     private float peso;
     
     // Identificador del distribuidor que hace la oferta
-    private int id;
+    private String id;
     
     // Constructor
-    public Oferta(TipoMercancia mercancia, float precio, float peso, int id) {
+    public Oferta(TipoMercancia mercancia, float precio, float peso, String id) {
         this.setMercancia(mercancia);
         this.setPrecio(precio);
         this.setPeso(peso);
@@ -67,14 +67,14 @@ public class Oferta implements Serializable {
     /**
      * @return the id
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
     

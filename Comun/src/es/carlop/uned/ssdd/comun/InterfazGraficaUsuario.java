@@ -39,7 +39,7 @@ public class InterfazGraficaUsuario {
     public static String pedirDato(String nombre) {
         String dato = "";
 
-        System.out.println("Introduzca " + nombre + ": ");
+        System.out.println("Introduzca " + nombre);
         dato = leerConsola();
         
         return dato;

@@ -65,13 +65,13 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
     }
 
     @Override
-    public List<Oferta> listarOfertasDistribuidor(int id) throws RemoteException {
+    public List<Oferta> listarOfertasDistribuidor(String id) throws RemoteException {
         List<Oferta> listaOfertas = new ArrayList<Oferta>();
         
         Iterator<Oferta> it = ofertas.iterator();
         while (it.hasNext()) {
             Oferta oferta= it.next();
-            if (oferta.getId() == id) {
+            if (oferta.getId().equals(id)) {
                 listaOfertas.add(oferta);
             }
         }

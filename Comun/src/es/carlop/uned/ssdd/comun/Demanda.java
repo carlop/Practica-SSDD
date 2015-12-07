@@ -18,10 +18,10 @@ public class Demanda implements Serializable {
     private TipoMercancia mercancia;
 
     // Identificador del cliente que hace la demanda
-    private int id;
+    private String id;
     
     // Constructor
-    public Demanda(TipoMercancia mercancia, int id) {
+    public Demanda(TipoMercancia mercancia, String id) {
         this.setMercancia(mercancia);
         this.setId(id);
     }
@@ -46,7 +46,7 @@ public class Demanda implements Serializable {
      * Devuelve el identificador del cliente
      * @return el identificador
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -54,7 +54,7 @@ public class Demanda implements Serializable {
      * El identificador del cliente 
      * @param id 
      */
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

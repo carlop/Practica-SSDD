@@ -9,7 +9,6 @@
 package es.carlop.uned.ssdd.distribuidor;
 
 import java.io.IOException;
-import java.net.BindException;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -17,8 +16,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
-import java.util.Random;
-
 import es.carlop.uned.ssdd.comun.Codebase;
 import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
 import es.carlop.uned.ssdd.comun.Oferta;
@@ -40,8 +37,11 @@ public class Distribuidor {
     private static ServicioVentaInterface remoteServicioVenta;
     
     // Identificador
-    private static int id = 0;
+    private static String id = "";
     
+    // Identificador de sesión
+    private static int idSesion = 0;
+
     // Opción del menú
     private static int opcion = 0;
 
@@ -61,8 +61,8 @@ public class Distribuidor {
 
             int seleccion = 0;
             do {
-                if (getId() > 0) {
-                    String[] opcionesMenu = {"Introducir oferta.", "Quitar oferta.", "Mostrar ventas.", "Darse de baja en el sistema"};
+                if (getIdSesion() > 0) {
+                    String[] opcionesMenu = {"Introducir oferta", "Quitar oferta", "Mostrar ventas", "Darse de baja en el sistema"};
                     do {
                         opcion = InterfazGraficaUsuario.mostrarMenu("Distribuidor", opcionesMenu);
                         switch (opcion) {
@@ -89,7 +89,7 @@ public class Distribuidor {
                         }
                     } while (opcion != 5);
                 } else {
-                    String[] opcionesMenu = {"Registrar un nuevo usuario.", "Autenticarse en el sistema (hacer login)."};
+                    String[] opcionesMenu = {"Registrar un nuevo usuario", "Autenticarse en el sistema (hacer login)"};
                     do {
                         opcion = InterfazGraficaUsuario.mostrarMenu("Distribuidor", opcionesMenu);
                         switch (opcion) {
@@ -154,7 +154,7 @@ public class Distribuidor {
                 mercancia = TipoMercancia.SOJA;
                 break;
             default:
-                System.out.println("Selecciona el tipo de mercancía correcto.");
+                System.out.println("Selecciona el tipo de mercancía correcto");
         };
         // Pedimos el precio de la oferta
         precio = Float.parseFloat(InterfazGraficaUsuario.pedirDato("Precio"));
@@ -166,7 +166,7 @@ public class Distribuidor {
             servicioMercancias.introducirOferta(oferta);
             System.out.println("Oferta introducida correctamente");
         } catch (RemoteException e) {
-            System.err.println("Ha habido un error al introducir la oferta. Vuelva a intentarlo");
+            System.err.println("Ha habido un error al introducir la oferta, vuelva a intentarlo");
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
@@ -228,7 +228,7 @@ public class Distribuidor {
     private static void salir() {
         try {
             remoteServicioVenta.guardarDatos();
-            servicioAutenticacion.salir(getId());
+            servicioAutenticacion.salir(getIdSesion());
             System.out.println("Sesión cerrada correctamente");
         } catch (RemoteException e) {
             System.err.println("Ha ocurrido un error y no se ha salido del sistema correctamente");
@@ -289,9 +289,10 @@ public class Distribuidor {
             // Autenticamos el cliente en el servicio de autenticación
             idTemp = servicioAutenticacion.autenticar(usuario, password, TipoUsuario.DISTRIBUIDOR);
             if (idTemp > 0) {
-                setId(idTemp);
+                setId(usuario);
+                setIdSesion(idTemp);
                 opcion = 3;
-                System.out.println("Autenticación correcta. Su identificador es: " + getId());
+                System.out.println("Autenticación correcta. Su identificador es: " + getIdSesion());
             } else if (idTemp == -1) {
                 System.out.println("Contraseña errónea");
             } else if (idTemp == -2) {
@@ -307,11 +308,12 @@ public class Distribuidor {
         // Iniciamos el servicio de ventas
         Codebase.setCodeBase(ServicioVentaInterface.class);
         Registry registroVenta;
-        int puerto = 8890 + getId();
+        int puerto = 8890 + getIdSesion();
         try {
             registroVenta = LocateRegistry.createRegistry(puerto);
             ServicioVentaInterface servicioVenta = new ServicioVentaImpl();
             servicioVenta.setId(String.valueOf(getId()));
+            servicioVenta.cargarDatos();
             servicioVenta.cargarDatos();
             remoteServicioVenta = (ServicioVentaInterface) UnicastRemoteObject.exportObject(servicioVenta, puerto);
             registroVenta.rebind("servicioventa" + getId(), remoteServicioVenta);
@@ -327,7 +329,7 @@ public class Distribuidor {
      * Devuelve el identificador del distribuidor
      * @return el id
      */
-    public static int getId() {
+    public static String getId() {
         return id;
     }
 
@@ -335,8 +337,22 @@ public class Distribuidor {
      * Establece el identificador del distribuidor
      * @param id identificador del distribuidor
      */
-    public static void setId(int id) {
+    public static void setId(String id) {
         Distribuidor.id = id;
+    }
+
+    /**
+     * @return the idSesion
+     */
+    public static int getIdSesion() {
+        return idSesion;
+    }
+
+    /**
+     * @param idSesion the idSesion to set
+     */
+    public static void setIdSesion(int idSesion) {
+        Distribuidor.idSesion = idSesion;
     }
 
 }

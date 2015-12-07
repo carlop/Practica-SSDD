@@ -29,7 +29,10 @@ public class Cliente {
     private static ServicioMercanciasInterface servicioMercancias;
     
     // Identificador
-    private static int id = 0;
+    private static String id = "";
+    
+    // Identificador de sesión
+    private static int idSesion = 0;
     
     // Opción del menú
     private static int opcion = 0;
@@ -49,7 +52,7 @@ public class Cliente {
 
             int seleccion = 0;
             do {
-                if (getId() > 0) {
+                if (getIdSesion() > 0) {
                     String[] opcionesMenu = {"Introducir demanda", "Recibir ofertas", "Comprar mercancía", "Darse de baja en el sistema"};
                     do {
                         opcion = InterfazGraficaUsuario.mostrarMenu("Cliente", opcionesMenu);
@@ -150,7 +153,7 @@ public class Cliente {
      */
     private static void salir() {
         try {
-            servicioAutenticacion.salir(getId());
+            servicioAutenticacion.salir(getIdSesion());
             System.out.println("Sesión cerrada correctamente");
         } catch (RemoteException e) {
             System.err.println("Ha ocurrido un error y no se ha salido del sistema correctamente");
@@ -210,7 +213,8 @@ public class Cliente {
             // Autenticamos el cliente en el servicio de autenticación
             idTemp = servicioAutenticacion.autenticar(usuario, password, TipoUsuario.CLIENTE);
             if (idTemp > 0) {
-                setId(idTemp);
+                setId(usuario);
+                setIdSesion(idTemp);
                 opcion = 3;
                 System.out.println("Autenticación correcta. Su identificador es: " + getId());
             } else if (idTemp == -1) {
@@ -230,7 +234,7 @@ public class Cliente {
      * Devuelve el identificador del cliente
      * @return el id
      */
-    public static int getId() {
+    public static String getId() {
         return id;
     }
 
@@ -238,7 +242,21 @@ public class Cliente {
      * Establece el identificador del cliente
      * @param id identificador del cliente
      */
-    public static void setId(int id) {
+    public static void setId(String id) {
         Cliente.id = id;
+    }
+
+    /**
+     * @return the idSesion
+     */
+    public static int getIdSesion() {
+        return idSesion;
+    }
+
+    /**
+     * @param idSesion the idSesion to set
+     */
+    public static void setIdSesion(int idSesion) {
+        Cliente.idSesion = idSesion;
     }
 }
