@@ -47,7 +47,7 @@ public class Regulador {
             Registry registroMercancias = LocateRegistry.createRegistry(8889);
             ServicioMercanciasInterface servicioMercancias = new ServicioMercanciasImpl();
             remoteServicioMercancias = (ServicioMercanciasInterface) UnicastRemoteObject.exportObject(servicioMercancias, 8889);
-            registroMercancias.rebind("serviciomercancias", servicioMercancias);
+            registroMercancias.rebind("serviciomercancias", remoteServicioMercancias);
             System.out.println("Servicio de mercancías preparado...");
             
             // Cargamos los datos si existen

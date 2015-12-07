@@ -144,9 +144,8 @@ public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface
         if (db.size() > 0) {
             Iterator<String> it = db.keySet().iterator();
             while (it.hasNext()) {
-                Object key = it.next();
-                String usuario = (String) key;
-                listaUsuarios.add(usuario + (usuarioConectado(usuario, tipoUsuario) ? " [conectado]" : ""));
+                String usuario = it.next();
+                listaUsuarios.add(usuario + (usuarioConectado(usuario, tipoUsuario) ? " [autenticado]" : ""));
             }
         } else {
             listaUsuarios.add("No hay ningún " + tipoUsuario + " registrado");

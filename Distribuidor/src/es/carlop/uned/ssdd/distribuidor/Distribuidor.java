@@ -9,16 +9,22 @@
 package es.carlop.uned.ssdd.distribuidor;
 
 import java.io.IOException;
+import java.net.BindException;
+import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.Random;
 
+import es.carlop.uned.ssdd.comun.Codebase;
 import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
 import es.carlop.uned.ssdd.comun.Oferta;
 import es.carlop.uned.ssdd.comun.ServicioAutenticacionInterface;
 import es.carlop.uned.ssdd.comun.ServicioMercanciasInterface;
+import es.carlop.uned.ssdd.comun.ServicioVentaInterface;
 import es.carlop.uned.ssdd.comun.TipoMercancia;
 import es.carlop.uned.ssdd.comun.TipoUsuario;
 
@@ -30,6 +36,9 @@ public class Distribuidor {
     // Servicio de mercancias
     private static ServicioMercanciasInterface servicioMercancias;
     
+    // Servicio de ventas
+    private static ServicioVentaInterface remoteServicioVenta;
+    
     // Identificador
     private static int id = 0;
     
@@ -39,7 +48,7 @@ public class Distribuidor {
     public static void main(String[] args) throws IOException {
 
         try {
-            // Conectamos al servicio de autenticacion
+            // Conectamos al servicio de autenticación
             Registry registroAutenticacion = LocateRegistry.getRegistry(8888);
             servicioAutenticacion = (ServicioAutenticacionInterface) registroAutenticacion.lookup("servicioautenticacion");
             System.out.println("Distribuidor conectado al servicio de autenticación...");
@@ -48,6 +57,7 @@ public class Distribuidor {
             Registry registroMercancias = LocateRegistry.getRegistry(8889);
             servicioMercancias = (ServicioMercanciasInterface) registroMercancias.lookup("serviciomercancias");
             System.out.println("Distribuidor conectado al servicio de mercancías...");
+            
 
             int seleccion = 0;
             do {
@@ -101,13 +111,13 @@ public class Distribuidor {
             System.out.println("Cerrando el distribuidor...");
             System.exit(0);
         } catch (RemoteException e) {
-            System.err.println("No se ha podido conectar con el servicio de autenticación. Probablemente tengas que ejecutar regulador primero.");
+            System.err.println("¡ups! algo ha fallado, prueba a ejecutar regulador primero");
             System.err.println(e.getMessage());
         } catch (NotBoundException e) {
             System.err.println("NotBoundException");
             System.err.println(e.getMessage());
         }
-
+ 
     }
     
     /**
@@ -156,7 +166,7 @@ public class Distribuidor {
             servicioMercancias.introducirOferta(oferta);
             System.out.println("Oferta introducida correctamente");
         } catch (RemoteException e) {
-            System.err.println("Ha habido un error al introducir la oferta. Vuelva a intentarlo.");
+            System.err.println("Ha habido un error al introducir la oferta. Vuelva a intentarlo");
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
@@ -166,8 +176,7 @@ public class Distribuidor {
      * Quita una de las ofertas añadidas en el servicio de mercancías
      */
     private static void quitarOferta() {
-        // TODO Auto-generated method stub
-            List<Oferta> ofertas = null;
+        List<Oferta> ofertas = null;
         
         InterfazGraficaUsuario.mostrarTitulo("Seleccione la oferta que desea eliminar:");
         try {
@@ -181,11 +190,13 @@ public class Distribuidor {
                 int oe = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Oferta a eliminar"));
                 Oferta ofertaEliminar = ofertas.get(oe);
                 servicioMercancias.eliminarOferta(ofertaEliminar);
+                System.out.println("Oferta: " + ofertaEliminar.getMercancia() + ", " + ofertaEliminar.getPeso() + ", " + ofertaEliminar.getPrecio() + " quitada");
             } else {
                 System.out.println("No ha introducido ninguna oferta");
             }
         } catch (RemoteException e) {
-            // TODO Auto-generated catch block
+            System.err.println("Ha habido un error eliminando la oferta, vuelva a intentarlo");
+            System.err.println(e.getMessage());
             e.printStackTrace();
         }
     }
@@ -194,8 +205,13 @@ public class Distribuidor {
      * Muestra las ventas realizadas
      */
     private static void mostrarVentas() {
-        // TODO Auto-generated method stub
-        
+        try {
+            remoteServicioVenta.mostarVentas();
+        } catch (RemoteException e) {
+            System.err.println("Ha ocurrido un error y no se ha podido conseguir la información de las ventas");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -214,7 +230,7 @@ public class Distribuidor {
             servicioAutenticacion.salir(getId());
             System.out.println("Sesión cerrada correctamente");
         } catch (RemoteException e) {
-            System.err.println("Ha ocurrido un error y no se ha salido del sistema correctamente.");
+            System.err.println("Ha ocurrido un error y no se ha salido del sistema correctamente");
             System.err.println(e.getMessage());
             e.printStackTrace();
         }
@@ -243,10 +259,10 @@ public class Distribuidor {
                 System.out.println("Ya está registrado. Ahora inicie sesión para continuar.");
                 autenticarDistribuidor();
             } else {
-                System.out.println("Ya existe un usuario " + TipoUsuario.DISTRIBUIDOR + " con este nombre. Por favor, seleccione uno diferente.");
+                System.out.println("Ya existe un usuario " + TipoUsuario.DISTRIBUIDOR + " con este nombre, seleccione uno diferente");
             }
         } catch (RemoteException e) {
-            System.err.println("No se ha podido registrar. Inténtelo de nuevo.");
+            System.err.println("No se ha podido registrar, inténtelo de nuevo");
             e.printStackTrace();
         }
     }
@@ -276,16 +292,32 @@ public class Distribuidor {
                 opcion = 3;
                 System.out.println("Autenticación correcta. Su identificador es: " + getId());
             } else if (idTemp == -1) {
-                System.out.println("Contraseña errónea.");
+                System.out.println("Contraseña errónea");
             } else if (idTemp == -2) {
                 System.out.println("No existe ningún " + TipoUsuario.DISTRIBUIDOR + " registrado con nombre " + usuario);
             } else if (idTemp == -3) {
-                System.out.println("¡ups! " + usuario + " ya está autenticado en el sistema.");
+                System.out.println("¡ups! " + usuario + " ya está autenticado en el sistema");
             }
         } catch (RemoteException e) {
             System.err.println("No se ha podido autenticar");
             e.printStackTrace();
         }
+        
+        // Iniciamos el servicio de ventas
+        Codebase.setCodeBase(ServicioVentaInterface.class);
+        Registry registroVenta;
+        int puerto = 8890 + getId();
+        try {
+            registroVenta = LocateRegistry.createRegistry(puerto);
+            ServicioVentaInterface servicioVenta = new ServicioVentaImpl();
+            remoteServicioVenta = (ServicioVentaInterface) UnicastRemoteObject.exportObject(servicioVenta, puerto);
+            registroVenta.rebind("servicioventa" + getId(), remoteServicioVenta);
+        } catch (AccessException e) {
+            e.printStackTrace();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Servicio de venta preparado...");
     }
 
     /**
