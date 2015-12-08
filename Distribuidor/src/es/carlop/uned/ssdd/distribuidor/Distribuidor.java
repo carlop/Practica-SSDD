@@ -314,7 +314,6 @@ public class Distribuidor {
             ServicioVentaInterface servicioVenta = new ServicioVentaImpl();
             servicioVenta.setId(String.valueOf(getId()));
             servicioVenta.cargarDatos();
-            servicioVenta.cargarDatos();
             remoteServicioVenta = (ServicioVentaInterface) UnicastRemoteObject.exportObject(servicioVenta, puerto);
             registroVenta.rebind("servicioventa" + getId(), remoteServicioVenta);
         } catch (AccessException e) {

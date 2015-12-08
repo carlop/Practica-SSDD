@@ -2,6 +2,7 @@ package es.carlop.uned.ssdd.distribuidor;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,18 +31,27 @@ public class ServicioVentaImpl implements ServicioVentaInterface {
             List<Oferta> listaVentas = ventas.get(key);
             System.out.println("Cliente: " + key);
             for (Oferta oferta : listaVentas) {
-                System.out.println("--" + oferta.getMercancia() + ", " + oferta.getPeso() + ", " + oferta.getPrecio());
+                System.out.println("       * " + oferta.getMercancia() + ", " + oferta.getPeso() + "Kg, " + oferta.getPrecio() + "€");
                 precioTotal = precioTotal + oferta.getPrecio();
             }
         }
-        System.out.println("Total: " + precioTotal);
+        System.out.println("Total: " + precioTotal + "€");
 
     }
 
     @Override
-    public void comprarMercancia() throws RemoteException {
-        // TODO Auto-generated method stub
+    public void comprarMercancia(Oferta oferta, String id) throws RemoteException {
+        // Sacamos las ventas realizadas a ese cliente
+        List<Oferta> ventasCliente = ventas.get(id);
+        if (ventasCliente == null) {
+            ventasCliente = new ArrayList<Oferta>();
+        }
+        // Añadimos la venta a la lista
+        ventasCliente.add(oferta);
+        // Guardamos las ventas realizadas a ese cliente
+        ventas.put(id, ventasCliente);
         
+        System.out.println("Venta realizada a " + id + ": " + oferta.getMercancia() + ", " + oferta.getPeso() + "Kg, " + oferta.getPrecio() + "€");
     }
 
     @Override

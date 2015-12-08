@@ -12,11 +12,14 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.List;
 
 import es.carlop.uned.ssdd.comun.Demanda;
 import es.carlop.uned.ssdd.comun.InterfazGraficaUsuario;
+import es.carlop.uned.ssdd.comun.Oferta;
 import es.carlop.uned.ssdd.comun.ServicioAutenticacionInterface;
 import es.carlop.uned.ssdd.comun.ServicioMercanciasInterface;
+import es.carlop.uned.ssdd.comun.ServicioVentaInterface;
 import es.carlop.uned.ssdd.comun.TipoMercancia;
 import es.carlop.uned.ssdd.comun.TipoUsuario;
 
@@ -67,6 +70,7 @@ public class Cliente {
                             break;
                         case 3:
                             InterfazGraficaUsuario.limpiarPantalla();
+                            comprarMercancia();
                             break;
                         case 4:
                             InterfazGraficaUsuario.limpiarPantalla();
@@ -158,7 +162,74 @@ public class Cliente {
      * Recibe las ofertas disponibles para las demandas del cliente
      */
     private static void recibirOfertas() {
+        List<Oferta> ofertas = null;
         
+        InterfazGraficaUsuario.mostrarTitulo("Ofertas seleccionadas:");
+        try {
+            ofertas = servicioMercancias.recibirOfertas(getId());
+            if (ofertas.size() > 0) {
+                for (int i = 0; i < ofertas.size(); i++) {
+                    Oferta oferta = ofertas.get(i);
+                    System.out.println("[" + i + "] " + oferta.getId() + ": " + oferta.getMercancia() + ", " +
+                                        oferta.getPrecio() + "€, " + oferta.getPeso() + "Kg");
+                }
+            } else {
+                System.out.println("No hay ninguna oferta disponible para usted");
+            }
+        } catch (RemoteException e) {
+            System.err.println("Ha habido un error recibiendo las ofertas disponibles");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Compra la mercancía seleccionada al distribuidor de la misma
+     */
+    private static void comprarMercancia() {
+        List<Oferta> ofertas = null;
+        
+        InterfazGraficaUsuario.mostrarTitulo("Seleccione la oferta que desea comprar:");
+        try {
+            ofertas = servicioMercancias.recibirOfertas(getId());
+            if (ofertas.size() > 0) {
+                for (int i = 0; i < ofertas.size(); i++) {
+                    Oferta oferta = ofertas.get(i);
+                    System.out.println("[" + i + "] " + oferta.getId() + ": " + oferta.getMercancia() + ", " +
+                                        oferta.getPrecio() + "€, " + oferta.getPeso() + "Kg");
+                }
+                int cm = Integer.parseInt(InterfazGraficaUsuario.pedirDato("Seleciona la oferta"));
+                Oferta ofertaComprar = ofertas.get(cm);
+                if (servicioAutenticacion.usuarioConectado(ofertaComprar.getId(), TipoUsuario.DISTRIBUIDOR)) {
+                    int puerto = 8890 + servicioAutenticacion.getIdSesion(ofertaComprar.getId());
+                    try {
+                        // Conectamos con el servicio de ventas del distribuidor de la oferta seleccionada
+                        Registry registroVentas = LocateRegistry.getRegistry(puerto);
+                        ServicioVentaInterface servicioVentas = (ServicioVentaInterface) registroVentas.lookup("servicioventa" + ofertaComprar.getId());
+                        System.out.println("Cliente conectado al servicio de ventas de " + ofertaComprar.getId());
+                        
+                        // Compramos la oferta seleccionada
+                        servicioVentas.comprarMercancia(ofertaComprar, getId());
+                        System.out.println("Compra realizada correctamente...");
+                    } catch (RemoteException e) {
+                        System.err.println("Ha habido un problema al realizar la compra, vuelva a intentarlo");
+                        System.err.println(e.getMessage());
+                        e.printStackTrace();
+                    } catch (NotBoundException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Este distribuidor no está autenticado actualmente, " + 
+                                       "por lo que no se puede realizar la compra, seleccione una oferta distinta");
+                }
+            } else {
+                System.out.println("No hay ninguna oferta disponible para usted");
+            }
+        } catch (RemoteException e) {
+            System.err.println("Ha habido un error recibiendo las ofertas disponibles");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     /**

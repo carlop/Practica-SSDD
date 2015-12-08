@@ -20,7 +20,7 @@ public interface ServicioMercanciasInterface extends Remote {
     // Elimina una oferta de una mercancía por el distribuidor
     public void eliminarOferta(Oferta oferta) throws RemoteException;
     // Devuelte una lista con las ofertas que recibe un cliente
-    public List<Oferta> recibirOfertas(int id) throws RemoteException;
+    public List<Oferta> recibirOfertas(String id) throws RemoteException;
     // Devuelve una lista con todas las ofertas actuales
     public List<Oferta> listarOfertas() throws RemoteException;
     // Devuelve una lista con todas las demandas actuales

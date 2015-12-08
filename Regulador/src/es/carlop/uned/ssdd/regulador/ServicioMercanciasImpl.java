@@ -57,7 +57,7 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
     @Override
     public void introducirOferta(Oferta oferta) throws RemoteException {
         ofertas.add(oferta);
-        System.out.println("Nueva oferta introducida: " + oferta.getMercancia() + ", " + oferta.getPeso() + " kilos, " +
+        System.out.println("Nueva oferta introducida: " + oferta.getMercancia() + ", " + oferta.getPeso() + "Kg, " +
                            oferta.getPrecio() + "€");
     }
 
@@ -67,15 +67,29 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
             Oferta oe = ofertas.get(i);
             if (oe.equals(oferta)) {
                 ofertas.remove(i);
-                System.out.println("Oferta eliminada: " + oferta.getMercancia() + ", " + oferta.getPeso() + " kilos, " +
+                System.out.println("Oferta eliminada: " + oferta.getMercancia() + ", " + oferta.getPeso() + "Kg, " +
                            oferta.getPrecio() + "€");
             }
         }
     }
 
     @Override
-    public List<Oferta> recibirOfertas(int id) throws RemoteException {
-	return null;
+    public List<Oferta> recibirOfertas(String id) throws RemoteException {
+        List<Oferta> listaOfertas = new ArrayList<Oferta>();
+       
+        if (demandas.size() > 0 && ofertas.size() > 0) {
+            for (Demanda demanda : demandas) {
+                if (demanda.getId().equals(id)) {
+                    for (Oferta oferta : ofertas) {
+                        if (oferta.getMercancia() == demanda.getMercancia()) {
+                            listaOfertas.add(oferta);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return listaOfertas;
     }
 
     @Override

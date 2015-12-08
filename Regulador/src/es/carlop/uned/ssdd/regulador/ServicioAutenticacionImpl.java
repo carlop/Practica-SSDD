@@ -153,8 +153,21 @@ public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface
         return listaUsuarios;
     }
 
-    private boolean usuarioConectado(String usuario, TipoUsuario tipoUsuario) throws RemoteException {
+    @Override
+    public boolean usuarioConectado(String usuario, TipoUsuario tipoUsuario) throws RemoteException {
         return usuariosConectados.containsValue(usuario);
+    }
+    
+    @Override
+    public int getIdSesion(String id) throws RemoteException {
+        // sacamos el id de sesión del distribuidor
+        for (Integer key : usuariosConectados.keySet()) {
+            if (usuariosConectados.get(key).equals(id)) {
+                return key;
+            }
+        }
+
+        return 0;
     }
     
     /**
