@@ -64,7 +64,7 @@ public class Distribuidor {
                 if (getIdSesion() > 0) {
                     String[] opcionesMenu = {"Introducir oferta", "Quitar oferta", "Mostrar ventas", "Darse de baja en el sistema"};
                     do {
-                        opcion = InterfazGraficaUsuario.mostrarMenu("Distribuidor", opcionesMenu);
+                        opcion = InterfazGraficaUsuario.mostrarMenu("Distribuidor: " + getId(), opcionesMenu);
                         switch (opcion) {
                         case 1:
                             InterfazGraficaUsuario.limpiarPantalla();
@@ -292,7 +292,7 @@ public class Distribuidor {
                 setId(usuario);
                 setIdSesion(idTemp);
                 opcion = 3;
-                System.out.println("Autenticación correcta. Su identificador es: " + getIdSesion());
+                System.out.println("Autenticación correcta...");
             } else if (idTemp == -1) {
                 System.out.println("Contraseña errónea");
             } else if (idTemp == -2) {

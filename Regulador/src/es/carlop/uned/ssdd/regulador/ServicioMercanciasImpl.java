@@ -42,8 +42,8 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
                 }
             }
             if (anadirDemanda) {
-            demandas.add(demanda);
-            System.out.println("Nueva demanda introducida: " + demanda.getMercancia());
+                demandas.add(demanda);
+                System.out.println("Nueva demanda introducida: " + demanda.getMercancia());
             } else {
                         System.out.println("Ya tiene una demanda de " + demanda.getMercancia());
             }
@@ -52,6 +52,20 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
             System.out.println("Nueva demanda introducida: " + demanda.getMercancia());
         }
         return retorno;
+    }
+
+    @Override
+    public void eliminarDemanda(Demanda demanda) throws RemoteException {
+        boolean salida = false;
+        if (!salida) {
+            for (int i = 0; i < demandas.size(); i++) {
+                Demanda demandaTemp = demandas.get(i);
+                if (demandaTemp.equals(demanda)) {
+                    demandas.remove(i);
+                    salida = true;
+                }
+            }
+        }
     }
 
     @Override

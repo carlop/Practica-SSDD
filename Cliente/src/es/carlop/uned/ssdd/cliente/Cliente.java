@@ -58,7 +58,7 @@ public class Cliente {
                 if (getIdSesion() > 0) {
                     String[] opcionesMenu = {"Introducir demanda", "Recibir ofertas", "Comprar mercancía", "Darse de baja en el sistema"};
                     do {
-                        opcion = InterfazGraficaUsuario.mostrarMenu("Cliente", opcionesMenu);
+                        opcion = InterfazGraficaUsuario.mostrarMenu("Cliente: " + getId(), opcionesMenu);
                         switch (opcion) {
                         case 1:
                             InterfazGraficaUsuario.limpiarPantalla();
@@ -209,8 +209,21 @@ public class Cliente {
                         System.out.println("Cliente conectado al servicio de ventas de " + ofertaComprar.getId());
                         
                         // Compramos la oferta seleccionada
-                        servicioVentas.comprarMercancia(ofertaComprar, getId());
-                        System.out.println("Compra realizada correctamente...");
+                        String opcionComprar = InterfazGraficaUsuario.pedirDato("¿Desea comprar " +
+                                ofertaComprar.getMercancia() + ", " + ofertaComprar.getPeso() + "Kg, " +
+                                ofertaComprar.getPrecio() + "€ a " + ofertaComprar.getId() + "? (s/n)");
+                        if (opcionComprar.equals("s")) {
+                            servicioVentas.comprarMercancia(ofertaComprar, getId());
+                            System.out.println("Compra realizada correctamente...");
+                            // Pedimos la eliminación de la demanda
+                            String opcionEliminar = InterfazGraficaUsuario.pedirDato("¿Desea eliminar la demanda de " +
+                                    ofertaComprar.getMercancia() + "? (s/n)");
+                            if (opcionEliminar.equals("s")) {
+                                Demanda demandaEliminar = new Demanda(ofertaComprar.getMercancia(), getId());
+                                servicioMercancias.eliminarDemanda(demandaEliminar);
+                                System.out.println("Demanda de " + ofertaComprar.getMercancia() + " eliminada");
+                            }
+                        }
                     } catch (RemoteException e) {
                         System.err.println("Ha habido un problema al realizar la compra, vuelva a intentarlo");
                         System.err.println(e.getMessage());
@@ -300,7 +313,7 @@ public class Cliente {
                 setId(usuario);
                 setIdSesion(idTemp);
                 opcion = 3;
-                System.out.println("Autenticación correcta. Su identificador es: " + getId());
+                System.out.println("Autenticación correcta...");
             } else if (idTemp == -1) {
                 System.out.println("Contraseña errónea");
             } else if (idTemp == -2) {
