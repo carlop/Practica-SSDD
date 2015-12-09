@@ -10,7 +10,9 @@ package es.carlop.uned.ssdd.distribuidor;
 
 import java.io.IOException;
 import java.rmi.AccessException;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -36,6 +38,9 @@ public class Distribuidor {
     // Servicio de ventas
     private static ServicioVentaInterface remoteServicioVenta;
     
+    // Registri RMI
+    private static Registry registroRMI;
+    
     // Identificador
     private static String id = "";
     
@@ -45,19 +50,23 @@ public class Distribuidor {
     // Opción del menú
     private static int opcion = 0;
 
+    private static ServicioVentaInterface servicioVenta;
+
+    private static int puerto;
+
     public static void main(String[] args) throws IOException {
 
         try {
+            // Iniciamos el registro RMI
+            registroRMI = LocateRegistry.getRegistry(8888);
+
             // Conectamos al servicio de autenticación
-            Registry registroAutenticacion = LocateRegistry.getRegistry(8888);
-            servicioAutenticacion = (ServicioAutenticacionInterface) registroAutenticacion.lookup("servicioautenticacion");
+            servicioAutenticacion = (ServicioAutenticacionInterface) registroRMI.lookup("rmi://localhost/servicioautenticacion");
             System.out.println("Distribuidor conectado al servicio de autenticación...");
             
             // Conectamos al servicio de mercancias
-            Registry registroMercancias = LocateRegistry.getRegistry(8889);
-            servicioMercancias = (ServicioMercanciasInterface) registroMercancias.lookup("serviciomercancias");
+            servicioMercancias = (ServicioMercanciasInterface) registroRMI.lookup("rmi://localhost/serviciomercancias");
             System.out.println("Distribuidor conectado al servicio de mercancías...");
-            
 
             int seleccion = 0;
             do {
@@ -80,7 +89,9 @@ public class Distribuidor {
                             break;
                         case 4:
                             InterfazGraficaUsuario.limpiarPantalla();
-                            darseDeBaja();
+                            darDeBaja();
+                            opcion = 5;
+                            seleccion = -1;
                             break;
                         case 5:
                             salir();
@@ -217,9 +228,21 @@ public class Distribuidor {
     /**
      * Da de baja al distribuidor del sistema
      */
-    private static void darseDeBaja() {
-        // TODO Auto-generated method stub
-        
+    private static void darDeBaja() {
+        try {
+            boolean exito = servicioAutenticacion.baja(getIdSesion(), TipoUsuario.DISTRIBUIDOR);
+            if (exito) {
+                servicioMercancias.eliminarOfertas(getId());
+                System.out.println("Se eliminó su cuenta de usuario");
+                salir();
+            } else {
+                System.out.println("No puedo eliminarse su cuenta de usuario");
+            }
+        } catch (RemoteException e) {
+            System.err.println("Ha habido un error eliminando su cuenta");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -233,6 +256,18 @@ public class Distribuidor {
         } catch (RemoteException e) {
             System.err.println("Ha ocurrido un error y no se ha salido del sistema correctamente");
             System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+        try {
+            registroRMI.unbind("rmi://localhost:" + puerto + "/servicioventa" + getId());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            UnicastRemoteObject.unexportObject(servicioVenta, true);
+        } catch (NoSuchObjectException e) {
             e.printStackTrace();
         }
     }
@@ -284,7 +319,6 @@ public class Distribuidor {
         usuario = InterfazGraficaUsuario.pedirDato("Usuario");
         // Pedimos la contraseña
         password = InterfazGraficaUsuario.pedirDato("Password");
-        
         try {
             // Autenticamos el cliente en el servicio de autenticación
             idTemp = servicioAutenticacion.autenticar(usuario, password, TipoUsuario.DISTRIBUIDOR);
@@ -307,15 +341,15 @@ public class Distribuidor {
         
         // Iniciamos el servicio de ventas
         Codebase.setCodeBase(ServicioVentaInterface.class);
-        Registry registroVenta;
-        int puerto = 8890 + getIdSesion();
+        // Asignamos el puerto
+        puerto = 8890 + getIdSesion();
         try {
-            registroVenta = LocateRegistry.createRegistry(puerto);
-            ServicioVentaInterface servicioVenta = new ServicioVentaImpl();
+            registroRMI = LocateRegistry.getRegistry(8888);
+            servicioVenta = new ServicioVentaImpl();
             servicioVenta.setId(String.valueOf(getId()));
             servicioVenta.cargarDatos();
             remoteServicioVenta = (ServicioVentaInterface) UnicastRemoteObject.exportObject(servicioVenta, puerto);
-            registroVenta.rebind("servicioventa" + getId(), remoteServicioVenta);
+            registroRMI.rebind("rmi://localhost:" + puerto + "/servicioventa" + getId(), remoteServicioVenta);
         } catch (AccessException e) {
             e.printStackTrace();
         } catch (RemoteException e) {

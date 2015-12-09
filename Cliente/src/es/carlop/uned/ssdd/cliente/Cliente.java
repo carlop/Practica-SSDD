@@ -43,14 +43,15 @@ public class Cliente {
     public static void main(String[] args) throws IOException {
 
         try {
+            // Iniciamos el registro RMI
+            Registry registroRMI = LocateRegistry.getRegistry(8888);
+
             // Conectamos al servicio de autenticacion
-            Registry registryAutenticacion = LocateRegistry.getRegistry(8888);
-            servicioAutenticacion = (ServicioAutenticacionInterface) registryAutenticacion.lookup("servicioautenticacion");
+            servicioAutenticacion = (ServicioAutenticacionInterface) registroRMI.lookup("rmi://localhost/servicioautenticacion");
             System.out.println("Cliente conectado al servicio de autenticación...");
 
             // Conectamos al servicio de mercancias
-            Registry registroMercancias = LocateRegistry.getRegistry(8889);
-            servicioMercancias = (ServicioMercanciasInterface) registroMercancias.lookup("serviciomercancias");
+            servicioMercancias = (ServicioMercanciasInterface) registroRMI.lookup("rmi://localhost/serviciomercancias");
             System.out.println("Distribuidor conectado al servicio de mercancías...");
 
             int seleccion = 0;
@@ -74,6 +75,9 @@ public class Cliente {
                             break;
                         case 4:
                             InterfazGraficaUsuario.limpiarPantalla();
+                            darDeBaja();
+                            opcion = 5;
+                            seleccion = -1;
                             break;
                         case 5:
                             salir();
@@ -204,8 +208,8 @@ public class Cliente {
                     int puerto = 8890 + servicioAutenticacion.getIdSesion(ofertaComprar.getId());
                     try {
                         // Conectamos con el servicio de ventas del distribuidor de la oferta seleccionada
-                        Registry registroVentas = LocateRegistry.getRegistry(puerto);
-                        ServicioVentaInterface servicioVentas = (ServicioVentaInterface) registroVentas.lookup("servicioventa" + ofertaComprar.getId());
+                        Registry registroRMI = LocateRegistry.getRegistry(8888);
+                        ServicioVentaInterface servicioVentas = (ServicioVentaInterface) registroRMI.lookup("rmi://localhost:" + puerto + "/servicioventa" + ofertaComprar.getId());
                         System.out.println("Cliente conectado al servicio de ventas de " + ofertaComprar.getId());
                         
                         // Compramos la oferta seleccionada
@@ -244,6 +248,27 @@ public class Cliente {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * Da de baja al cliente del sistema
+     */
+    private static void darDeBaja() {
+        try {
+            boolean exito = servicioAutenticacion.baja(getIdSesion(), TipoUsuario.CLIENTE);
+            if (exito) {
+                servicioMercancias.eliminarDemandas(getId());
+                System.out.println("Se eliminó su cuenta de usuario");
+                salir();
+            } else {
+                System.out.println("No puedo eliminarse su cuenta de usuario");
+            }
+        } catch (RemoteException e) {
+            System.err.println("Ha habido un error eliminando su cuenta");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     
     /**
      * Permite cerrar sesión al cliente

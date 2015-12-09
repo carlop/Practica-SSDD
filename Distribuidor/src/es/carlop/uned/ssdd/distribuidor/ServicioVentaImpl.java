@@ -1,5 +1,6 @@
 package es.carlop.uned.ssdd.distribuidor;
 
+import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class ServicioVentaImpl implements ServicioVentaInterface {
         System.out.println("Total: " + precioTotal + "€");
 
     }
-
+    
     @Override
     public void comprarMercancia(Oferta oferta, String id) throws RemoteException {
         // Sacamos las ventas realizadas a ese cliente

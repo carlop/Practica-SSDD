@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import es.carlop.uned.ssdd.comun.Db;
 import es.carlop.uned.ssdd.comun.Demanda;
@@ -67,6 +68,18 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
             }
         }
     }
+    
+    @Override
+    public void eliminarDemandas(String id) throws RemoteException {
+        List<Demanda> listaDemandasTemp = new ArrayList<Demanda>();
+        for (int i = 0; i < demandas.size(); i++) {
+            Demanda demandaTemp = demandas.get(i);
+            if (!demandaTemp.getId().equals(id)) {
+                listaDemandasTemp.add(demandaTemp);
+            }
+        }
+        demandas = listaDemandasTemp;
+    }
 
     @Override
     public void introducirOferta(Oferta oferta) throws RemoteException {
@@ -85,6 +98,18 @@ public class ServicioMercanciasImpl implements ServicioMercanciasInterface {
                            oferta.getPrecio() + "€");
             }
         }
+    }
+
+    @Override
+    public void eliminarOfertas(String id) throws RemoteException {
+        List<Oferta> listaOfertasTemp = new ArrayList<Oferta>();
+        for (int i = 0; i < ofertas.size(); i++) {
+            Oferta ofertaTemp = ofertas.get(i);
+            if (!ofertaTemp.getId().equals(id)) {
+                listaOfertasTemp.add(ofertaTemp);
+            }
+        }
+        ofertas = listaOfertasTemp;
     }
 
     @Override

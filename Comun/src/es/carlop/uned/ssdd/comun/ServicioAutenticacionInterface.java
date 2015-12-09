@@ -20,7 +20,7 @@ public interface ServicioAutenticacionInterface extends Remote {
     // Saca a un usuario del sistema
     public void salir(int id) throws RemoteException;
     // Da de baja a un usuario del sistema
-    public boolean baja(int id) throws RemoteException;
+    public boolean baja(int id, TipoUsuario tipoUsuario) throws RemoteException;
     // Devuelve una lista con los clientes
     public List<String> listarUsuarios(TipoUsuario tipoUsuario) throws RemoteException;
     // Comprueba si un usuario está autenticado en el sistema

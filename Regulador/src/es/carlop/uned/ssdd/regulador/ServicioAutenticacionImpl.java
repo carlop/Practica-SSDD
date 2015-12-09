@@ -98,9 +98,15 @@ public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface
     }
 
     @Override
-    public boolean baja(int id) throws RemoteException {
-	// TODO Auto-generated method stub
-	return false;
+    public boolean baja(int id, TipoUsuario tipoUsuario) throws RemoteException {
+        boolean exito = false;
+        String usuario = usuariosConectados.get(id);
+        if (tipoUsuario == TipoUsuario.CLIENTE ) {
+            exito = clientes.remove(usuario, clientes.get(usuario));
+        } else if (tipoUsuario == TipoUsuario.DISTRIBUIDOR) {
+            exito = distribuidores.remove(usuario, distribuidores.get(usuario));
+        }
+        return exito;
     }
 
     @Override

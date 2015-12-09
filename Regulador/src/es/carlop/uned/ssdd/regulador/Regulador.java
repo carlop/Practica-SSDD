@@ -9,6 +9,9 @@
 package es.carlop.uned.ssdd.regulador;
 
 import java.io.IOException;
+import java.rmi.NoSuchObjectException;
+import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -30,24 +33,33 @@ public class Regulador {
     
     // Servicio de mercancias
     private static ServicioMercanciasInterface remoteServicioMercancias;
+    
+    private static Registry registroRMI;
+
+    private static ServicioAutenticacionInterface servicioAutenticacion;
+
+    private static ServicioMercanciasInterface servicioMercancias;
 
     public static void main(String[] args) throws IOException {
         
         try {
-            // Levantamos el servicio de autenticación
+            // Ruta a las interfaces
             Codebase.setCodeBase(ServicioAutenticacionInterface.class);
-            Registry registroAutenticacion = LocateRegistry.createRegistry(8888);
-            ServicioAutenticacionInterface servicioAutenticacion = new ServicioAutenticacionImpl();
+            Codebase.setCodeBase(ServicioMercanciasInterface.class);
+
+            // Iniciamos el registro RMI
+            registroRMI = LocateRegistry.createRegistry(8888);
+
+            // Levantamos el servicio de autenticación
+            servicioAutenticacion = new ServicioAutenticacionImpl();
             remoteServicioAutenticacion = (ServicioAutenticacionInterface) UnicastRemoteObject.exportObject(servicioAutenticacion, 8888);
-            registroAutenticacion.rebind("servicioautenticacion", remoteServicioAutenticacion);
+            registroRMI.rebind("rmi://localhost/servicioautenticacion", remoteServicioAutenticacion);
             System.out.println("Servicio de autenticacion preparado...");
             
             // Levantamos el servicio de mercancias
-            Codebase.setCodeBase(ServicioMercanciasInterface.class);
-            Registry registroMercancias = LocateRegistry.createRegistry(8889);
-            ServicioMercanciasInterface servicioMercancias = new ServicioMercanciasImpl();
+            servicioMercancias = new ServicioMercanciasImpl();
             remoteServicioMercancias = (ServicioMercanciasInterface) UnicastRemoteObject.exportObject(servicioMercancias, 8889);
-            registroMercancias.rebind("serviciomercancias", remoteServicioMercancias);
+            registroRMI.rebind("rmi://localhost/serviciomercancias", remoteServicioMercancias);
             System.out.println("Servicio de mercancías preparado...");
             
             // Cargamos los datos si existen
@@ -77,6 +89,7 @@ public class Regulador {
                     break;
                 case 5:
                     guardarDatos();
+                    salir();
                 default:
                     break;
                 }
@@ -140,6 +153,25 @@ public class Regulador {
         }
     }
     
+    private static void salir() {
+        try {
+            registroRMI.unbind("rmi://localhost/servicioautenticacion");
+            registroRMI.unbind("rmi://localhost/serviciomercancias");
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        catch (NotBoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            UnicastRemoteObject.unexportObject(servicioAutenticacion, true);
+            UnicastRemoteObject.unexportObject(servicioMercancias, true);
+            UnicastRemoteObject.unexportObject(registroRMI, true);
+        } catch (NoSuchObjectException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void guardarDatos() {
         try {
             remoteServicioAutenticacion.guardarDatos();
