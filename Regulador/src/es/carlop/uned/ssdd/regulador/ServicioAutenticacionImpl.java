@@ -45,7 +45,6 @@ public class ServicioAutenticacionImpl implements ServicioAutenticacionInterface
         } else if (tipoUsuario == TipoUsuario.DISTRIBUIDOR) {
             db = distribuidores;
         }
-//        if (db.containsKey(usuario)) {
         if (clientes.containsKey(usuario) || distribuidores.containsKey(usuario)) {
             System.out.println("Intento fallido de registro de " + tipoUsuario + ": nombre " + usuario + " en uso");
         } else {

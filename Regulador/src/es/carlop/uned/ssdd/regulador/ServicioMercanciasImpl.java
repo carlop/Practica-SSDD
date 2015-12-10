@@ -13,7 +13,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 
 import es.carlop.uned.ssdd.comun.Db;
 import es.carlop.uned.ssdd.comun.Demanda;

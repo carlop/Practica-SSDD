@@ -59,6 +59,10 @@ public class InterfazGraficaUsuario {
         System.out.println();
     }
     
+    /**
+     * Lee un texto introducido en la consola
+     * @return el texto introducido
+     */
     private static String leerConsola() {
         if (console != null) {
             return console.readLine();
@@ -71,6 +75,10 @@ public class InterfazGraficaUsuario {
         }
     }
     
+    /**
+     * Lee una opción introducida en la consola
+     * @return la opción escogida
+     */
     private static int leerOpcion() {
         if (console != null) {
             return Integer.parseInt(console.readLine());
@@ -83,6 +91,10 @@ public class InterfazGraficaUsuario {
         }
     }
 
+    /**
+     * Limpia la pantalla
+     * @throws IOException
+     */
     public static void limpiarPantalla() throws IOException {
         try {
             if (System.getProperty("os.name").startsWith("Window")) {
