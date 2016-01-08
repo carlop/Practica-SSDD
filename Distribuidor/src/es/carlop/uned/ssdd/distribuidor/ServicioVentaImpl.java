@@ -8,7 +8,6 @@
  */
 package es.carlop.uned.ssdd.distribuidor;
 
-import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
